@@ -13,15 +13,21 @@ def hand_movement(hand_landmarks):
     global last_pos
     
     landmarks = hand_landmarks.landmark
-    avg_pos = round(sum([landmark.x for landmark in landmarks]) / len(landmarks), 2)
-    
+
+    # getting avg of all the landmarks
+    curr_pos = round(sum([landmark.x for landmark in landmarks]) / len(landmarks), 3)
+
     if last_pos is not None:
-        if avg_pos < last_pos:
+        
+        # moving left means the pos value decreases so the cur_pos would be smaller
+        if (last_pos - curr_pos) >= 0.01:
             print("Moving left")
-        elif avg_pos > last_pos:
+
+        # moving right means the pos value increases so the cur_pos would be greater
+        elif (curr_pos - last_pos) >= 0.01:
             print("Moving right")
     
-    last_pos = avg_pos
+    last_pos = curr_pos
 
 while cap.isOpened():
     success, frame = cap.read()
