@@ -1,7 +1,13 @@
 import pygame
+import ctypes
+
 pygame.init()
 
-screen = pygame.display.set_mode([1000, 500])
+user32 = ctypes.windll.user32
+width, height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+
+screen = pygame.display.set_mode([0.5 * width, 0.6 * (height-60)])
+# minus 60 to account for the title bar
 
 running = True
 while running:
