@@ -45,7 +45,7 @@ class HandDetector:
     def run(self):
         success, frame = self.cap.read()
 
-        if not success or cv2.waitKey(1) == ord('q'):
+        if not success:
             return None
 
         # flipping the frame returns how the pic should look in real life, as the webcam will show a flipped video
