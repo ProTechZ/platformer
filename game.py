@@ -22,6 +22,13 @@ while running:
 
     screen.fill((255, 255, 255))
 
+    frame = model.run()
+    
+    if frame is None:
+        running = False
+    else:
+        screen.blit(frame, (0, 0))
+
     pygame.display.flip()
 
 pygame.quit()

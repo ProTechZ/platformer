@@ -1,4 +1,6 @@
 import cv2
+import numpy
+import pygame
 import mediapipe as mp
 
 mp_hands = mp.solutions.hands
@@ -33,6 +35,13 @@ class HandDetector:
 
         self.last_pos = curr_pos
 
+    def convert_frame_for_pygame(self, frame):
+        frame=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        frame=numpy.rot90(frame)
+        frame=pygame.surfarray.make_surface(frame) 
+        
+        return frame
+
     def run(self):
         success, frame = self.cap.read()
 
@@ -49,5 +58,5 @@ class HandDetector:
                 mp_drawing.draw_landmarks(reg_frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 self.detect_hand_movement(hand_landmarks)
 
-        return frame
+        return self.convert_frame_for_pygame(frame)
         
