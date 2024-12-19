@@ -9,11 +9,12 @@ mp_drawing = mp.solutions.drawing_utils
 class HandDetectorWindow:
     def __init__(self, width, height, detection_confidence=0.8, num_hands=1):
         self.model = mp_hands.Hands(max_num_hands=num_hands, min_detection_confidence=detection_confidence)
+        self.cap = cv2.VideoCapture(0)
 
         self.width = int(width)
         self.height = int(height)
 
-        self.cap = cv2.VideoCapture(0)
+        self.movement = 0
         self.last_pos = None
 
     def stop(self):
@@ -30,19 +31,22 @@ class HandDetectorWindow:
 
             # moving left means the pos value decreases so the cur_pos would be smaller
             if (self.last_pos - curr_pos) >= 0.01:
-                print("Moving left")
+                self.movement = 1
 
             # moving right means the pos value increases so the cur_pos would be greater
             elif (curr_pos - self.last_pos) >= 0.01:
-                print("Moving right")
+                self.movement = 2
+            
+            else:
+                self.movement = 0
 
         self.last_pos = curr_pos
 
     def convert_frame_for_pygame(self, frame):
         frame = cv2.resize(frame, (self.width, self.height))
-        frame=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
-        frame=numpy.rot90(frame)
-        frame=pygame.surfarray.make_surface(frame) 
+        frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
+        frame = numpy.rot90(frame)
+        frame = pygame.surfarray.make_surface(frame) 
         
         return frame
 
@@ -62,5 +66,5 @@ class HandDetectorWindow:
                 mp_drawing.draw_landmarks(reg_frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
                 self.detect_hand_movement(hand_landmarks)
 
-        return self.convert_frame_for_pygame(frame)
+        return self.convert_frame_for_pygame(frame), self.movement
         

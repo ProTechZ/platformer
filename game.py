@@ -17,7 +17,6 @@ model = HandDetectorWindow(width=0.4 * WIDTH, height=0.4 * HEIGHT)
 
 running = True
 while running:
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -27,12 +26,13 @@ while running:
 
     SCREEN.fill((255, 255, 255))
 
-    frame = model.run()
+    frame, movement = model.run()
     
     if frame is None:
         running = False
     else:
         SCREEN.blit(frame, (0, 0))
+        print(movement)
 
     pygame.display.flip()
 
