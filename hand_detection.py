@@ -6,9 +6,12 @@ import mediapipe as mp
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
-class HandDetector:
-    def __init__(self, detection_confidence=0.8, num_hands=1):
+class HandDetectorWindow:
+    def __init__(self, width, height, detection_confidence=0.8, num_hands=1):
         self.model = mp_hands.Hands(max_num_hands=num_hands, min_detection_confidence=detection_confidence)
+
+        self.width = int(width)
+        self.height = int(height)
 
         self.cap = cv2.VideoCapture(0)
         self.last_pos = None
@@ -36,6 +39,7 @@ class HandDetector:
         self.last_pos = curr_pos
 
     def convert_frame_for_pygame(self, frame):
+        frame = cv2.resize(frame, (self.width, self.height))
         frame=cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
         frame=numpy.rot90(frame)
         frame=pygame.surfarray.make_surface(frame) 
