@@ -50,7 +50,7 @@ class HandDetectorWindow:
         
         return frame
 
-    def run(self):
+    def start(self):
         success, frame = self.cap.read()
 
         if not success:

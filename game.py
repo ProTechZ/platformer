@@ -1,40 +1,39 @@
 import pygame
-import ctypes
 
 from hand_detection import HandDetectorWindow
 
 pygame.init()
 
-user32 = ctypes.windll.user32
-win_width, win_height = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1) - 60
-# minus 60 to account for the title bar
+class Game:
+    def __init__(self, width, height):
+        self.WIDTH = width
+        self.HEIGHT = height
+        self.SCREEN = pygame.display.set_mode([width, height])
 
-WIDTH = 0.5 * win_width
-HEIGHT = 0.6 * win_height
-SCREEN = pygame.display.set_mode([WIDTH, HEIGHT])
+        self.CAMERA = HandDetectorWindow(width=0.4 * width, height=0.4 * height)
 
-model = HandDetectorWindow(width=0.4 * WIDTH, height=0.4 * HEIGHT)
+        self.is_running = True
 
-running = True
-while running:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_q:
-                running=False
+    def run(self):
+        while self.is_running:
 
-    SCREEN.fill((255, 255, 255))
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.is_running = False
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.is_running=False 
+      
+            self.SCREEN.fill((255, 255, 255))        
+            frame, movement = self.CAMERA.start()       
 
-    frame, movement = model.run()
-    
-    if frame is None:
-        running = False
-    else:
-        SCREEN.blit(frame, (0, 0))
-        print(movement)
+            if frame is None:
+                self.is_running = False
+            else:       
+                self.SCREEN.blit(frame, (0, 0))
+                print(movement)
 
-    pygame.display.flip()
+            pygame.display.flip()
 
-pygame.quit()
-model.stop()
+        pygame.quit()
+        self.CAMERA.stop()
