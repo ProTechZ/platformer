@@ -1,9 +1,10 @@
 import pygame
-import random
 
 from hand_detection import HandDetectorWindow
 
 pygame.init()
+
+clock = pygame.time.Clock()
 
 class Game:
     def __init__(self, width, height):
@@ -15,18 +16,9 @@ class Game:
 
         self.is_running = True
 
-    def gen_platforms_coords(self, num):
-        coords = [
-            (random.randrange(self.CAMERA.width, self.WIDTH), 
-            random.randrange(self.CAMERA.height, self.HEIGHT)) 
-            for _ in range(num)
-        ]
-
-        return coords
-
     def run(self):
         while self.is_running:
-
+            clock.tick(1)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
@@ -36,8 +28,9 @@ class Game:
       
             self.SCREEN.fill((255, 255, 255))        
             frame, movement = self.CAMERA.start()    
-            print(self.gen_platforms_coords(5))
-
+            
+            for i, j in self.gen_platforms_coords(5):
+                pygame.draw.rect(self.SCREEN, (255, 0, 0), (i, j, 40, 10))
 
             if frame is None:
                 self.is_running = False
