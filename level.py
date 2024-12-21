@@ -16,3 +16,12 @@ class Level:
             x, y = platforms_coords[i]
             pygame.draw.rect(self.SCREEN, (0, 0, 0), (x, y, self.PLATFORM_WIDTH, self.PLATFORM_HEIGHT))      
     
+class Level1(Level):
+    def __init__(self, num_platforms, screen):
+        super().__init__(num_platforms, screen)
+
+    def draw_platforms(self):
+        platforms_coords = [(300, 300)]
+
+        return super().draw_platforms(platforms_coords)
+    
