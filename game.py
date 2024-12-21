@@ -22,9 +22,9 @@ class Game:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
-                # if event.type == pygame.KEYDOWN:
-                #     if event.key == pygame.K_q:
-                #         self.is_running=False 
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_q:
+                        self.is_running=False 
       
             self.SCREEN.fill((255, 255, 255))        
             frame, movement = self.CAMERA.start()    
