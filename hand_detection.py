@@ -7,12 +7,9 @@ mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
 
 class HandDetectorWindow:
-    def __init__(self, width, height, detection_confidence=0.8, num_hands=1):
+    def __init__(self, detection_confidence=0.8, num_hands=1):
         self.model = mp_hands.Hands(max_num_hands=num_hands, min_detection_confidence=detection_confidence)
         self.cap = cv2.VideoCapture(0)
-
-        self.width = int(width)
-        self.height = int(height)
 
         self.movement = 0
         self.last_pos = None
@@ -23,8 +20,6 @@ class HandDetectorWindow:
 
     def detect_hand_movement(self, hand_landmarks):    
         landmarks = hand_landmarks.landmark
-
-        # getting avg of all the landmarks
         curr_pos = round(sum([landmark.x for landmark in landmarks]) / len(landmarks), 3)
 
         if self.last_pos is not None:
@@ -42,8 +37,14 @@ class HandDetectorWindow:
 
         self.last_pos = curr_pos
 
+    def rescale_frame(self, frame, scale_factor):
+        width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH) * scale_factor)
+        height = int(self.cap.get(cv2.CAP_PROP_FRAME_HEIGHT) * scale_factor)
+
+        return cv2.resize(frame, (width, height), interpolation =cv2.INTER_AREA)
+
     def convert_frame_for_pygame(self, frame):
-        frame = cv2.resize(frame, (self.width, self.height))
+        frame = self.rescale_frame(frame, 0.5)
         frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
         frame = numpy.rot90(frame)
         frame = pygame.surfarray.make_surface(frame) 

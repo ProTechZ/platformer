@@ -10,7 +10,7 @@ class Game:
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
-        self.CAMERA = HandDetectorWindow(width=0.4 * width, height=0.4 * height)
+        self.CAMERA = HandDetectorWindow()
 
         self.is_running = True
 
@@ -32,8 +32,7 @@ class Game:
             if frame is None:
                 self.is_running = False
             else:       
-                self.SCREEN.blit(frame, (0, 0))
-                print(movement)
+                self.SCREEN.blit(frame, (0, 0))        
 
             pygame.display.flip()
 
