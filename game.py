@@ -1,24 +1,24 @@
 import pygame
 
 from hand_detection import HandDetectorWindow
+from level import Level1
 
 pygame.init()
-
-clock = pygame.time.Clock()
 
 class Game:
     def __init__(self, width, height):
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
-
         self.CAMERA = HandDetectorWindow(width=0.4 * width, height=0.4 * height)
 
         self.is_running = True
 
+        self.levels = [Level1(self.SCREEN)]
+        self.curr_level = 0
+        
     def run(self):
         while self.is_running:
-            clock.tick(1)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
