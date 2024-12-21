@@ -28,9 +28,6 @@ class Game:
       
             self.SCREEN.fill((255, 255, 255))        
             frame, movement = self.CAMERA.start()    
-            
-            for i, j in self.gen_platforms_coords(5):
-                pygame.draw.rect(self.SCREEN, (255, 0, 0), (i, j, 40, 10))
 
             if frame is None:
                 self.is_running = False
