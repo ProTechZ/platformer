@@ -1,4 +1,8 @@
 import pygame
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 class Level:
     def __init__(self, screen):
@@ -16,7 +20,8 @@ class Level:
             pygame.draw.rect(self.SCREEN, (0, 0, 0), (x, y, self.PLATFORM_WIDTH, self.PLATFORM_HEIGHT))
 
     def draw_ground(self):
-        ground = pygame.image.load(r"C:\Users\sheeb_gztgpqt\Desktop\Master Files\Coding\Machine Learning\platformer\images\ground.jpg").convert()
+        base = os.getenv('BASE')
+        ground = pygame.image.load(f"{base}\\platformer\\images\\ground.jpg").convert()
 
         for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
