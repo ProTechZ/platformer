@@ -26,8 +26,10 @@ class Game:
                     if event.key == pygame.K_q:
                         self.is_running=False 
       
-            self.SCREEN.fill((255, 255, 255))        
-            frame, movement = self.CAMERA.start()    
+            self.SCREEN.fill((255, 255, 255))  
+            frame, movement = self.CAMERA.start()
+
+            self.levels[self.curr_level].draw_ground()
 
             if frame is None:
                 self.is_running = False
