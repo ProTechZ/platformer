@@ -2,6 +2,7 @@ import pygame
 
 from hand_detection import HandDetectorWindow
 from level import Level1
+from player import Player
 
 pygame.init()
 
@@ -16,6 +17,8 @@ class Game:
 
         self.levels = [Level1(self.SCREEN)]
         self.curr_level = 0
+
+        self.player = Player(screen=self.SCREEN)
         
     def run(self):
         while self.is_running:
@@ -29,12 +32,13 @@ class Game:
             self.SCREEN.fill((255, 255, 255))  
             frame, movement = self.CAMERA.start()
 
-            self.levels[self.curr_level].draw_ground()
-
             if frame is None:
                 self.is_running = False
             else:       
-                self.SCREEN.blit(frame, (0, 0))        
+                self.SCREEN.blit(frame, (0, 0))
+
+            self.levels[self.curr_level].draw_ground()
+            self.player.idle()
 
             pygame.display.flip()
 

@@ -1,6 +1,6 @@
 import pygame
 from dotenv import load_dotenv
-import os
+from os import getenv
 
 load_dotenv()
 
@@ -20,7 +20,7 @@ class Level:
             pygame.draw.rect(self.SCREEN, (0, 0, 0), (x, y, self.PLATFORM_WIDTH, self.PLATFORM_HEIGHT))
 
     def draw_ground(self):
-        base = os.getenv('BASE')
+        base = getenv('BASE')
         ground = pygame.image.load(f"{base}\\platformer\\images\\ground.jpg").convert()
 
         for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
