@@ -5,6 +5,8 @@ class Level:
         self.platforms = []
 
         self.SCREEN = screen
+        self.SCREEN_WIDTH = self.SCREEN.get_width()
+        self.SCREEN_HEIGHT = self.SCREEN.get_height()
 
         self.PLATFORM_HEIGHT = 10
         self.PLATFORM_WIDTH = 50
@@ -16,7 +18,8 @@ class Level:
     def draw_ground(self):
         ground = pygame.image.load(r"C:\Users\sheeb_gztgpqt\Desktop\Master Files\Coding\Machine Learning\platformer\images\ground.jpg").convert()
 
-        self.SCREEN.blit(ground, (0, self.SCREEN.get_height() - ground.get_height()))
+        for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
+            self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
     
 class Level1(Level):
     def __init__(self, screen):
