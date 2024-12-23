@@ -22,6 +22,7 @@ class Game:
         self.player_y = 400
         self.player = Player(self.SCREEN, 100, self.player_x, self.player_y)
 
+        self.player_frames_id = 'idle'
         self.player_frames = self.player.idle()
         self.curr_player_frame = 0
 
@@ -35,11 +36,15 @@ class Game:
                     if event.key == pygame.K_q:
                         self.is_running=False 
                     if event.key == pygame.K_LEFT:
-                        self.player_frames = self.player.run_left()
-                        self.curr_player_frame = 0
+                        if not self.player_frames_id == 'run_left':
+                            self.player_frames = self.player.run_left()
+                            self.curr_player_frame = 0
+                            self.player_frames_id = 'run_left'
                     if event.key == pygame.K_RIGHT:
-                        self.player_frames = self.player.run_right()
-                        self.curr_player_frame = 0
+                        if not self.player_frames_id == 'run_right':
+                            self.player_frames = self.player.run_right()
+                            self.curr_player_frame = 0
+                            self.player_frames_id = 'run_right'
       
             self.SCREEN.fill((255, 255, 255))  
             frame, movement = self.CAMERA.start()
