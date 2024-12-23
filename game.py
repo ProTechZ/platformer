@@ -18,16 +18,28 @@ class Game:
         self.levels = [Level1(self.SCREEN)]
         self.curr_level = 0
 
-        self.player = Player(screen=self.SCREEN, size=100)
-        
+        self.player_x = 20
+        self.player_y = 400
+        self.player = Player(self.SCREEN, 100, self.player_x, self.player_y)
+
+        self.player_frames = self.player.idle()
+        self.curr_player_frame = 0
+
     def run(self):
         while self.is_running:
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_q:
                         self.is_running=False 
+                    if event.key == pygame.K_LEFT:
+                        self.player_frames = self.player.run_left()
+                        self.curr_player_frame = 0
+                    if event.key == pygame.K_RIGHT:
+                        self.player_frames = self.player.run_right()
+                        self.curr_player_frame = 0
       
             self.SCREEN.fill((255, 255, 255))  
             frame, movement = self.CAMERA.start()
@@ -38,9 +50,12 @@ class Game:
                 self.SCREEN.blit(frame, (0, 0))
 
             self.levels[self.curr_level].draw_ground()
-            player = self.player.run_left()
+            self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player_x, self.player_y))
 
-            self.SCREEN.blit(player, (40, 200))
+            if self.curr_player_frame >= len(self.player_frames) - 1:
+                self.curr_player_frame = 0
+            else:
+                self.curr_player_frame += 1
 
             pygame.display.flip()
 

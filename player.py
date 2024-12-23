@@ -3,12 +3,11 @@ from os import getenv
 import cv2
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, *groups, screen, size):
+    def __init__(self, screen, size, player_x, player_y, *groups):
         super().__init__(*groups)
 
-        self.idle_frame = 0
-        self.running_r_frame = 0
-        self.running_l_frame = 0
+        self.player_x = player_x
+        self.player_y = player_y
 
         self.SCREEN = screen
         self.SIZE = size
@@ -22,37 +21,20 @@ class Player(pygame.sprite.Sprite):
 
     def idle(self):
         base = getenv('BASE')
-        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Idle\\Player_Idle_{self.idle_frame}.png")
-        
-        if self.idle_frame == 17:
-            self.idle_frame = 0
-        else:
-            self.idle_frame += 1
+        player_frames  = [pygame.image.load(f"{base}platformer\\images\\player assets\\Idle\\Player_Idle_{i}.png") for i in range(18)]
 
-        return self.rescale_player(player, self.SIZE)
+        return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
 
     def run_right(self):
         base = getenv('BASE')
-        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{self.running_r_frame}.png")
-        
-        if self.running_r_frame == 11:
-            self.running_r_frame = 0
-        else:
-            self.running_r_frame += 1
+        player_frames  = [pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
 
-        return self.rescale_player(player, self.SIZE)
+        return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
     
     def run_left(self):
         base = getenv('BASE')
-        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{self.running_l_frame}.png")
-        player = pygame.transform.flip(player, True, False)
-        
-        if self.running_l_frame == 11:
-            self.running_l_frame = 0
-        else:
-            self.running_l_frame += 1
+        player_frames  = [pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
+        player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
 
-        return self.rescale_player(player, self.SIZE)
-
-
+        return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
     
