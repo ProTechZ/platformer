@@ -21,6 +21,7 @@ class Game:
         self.player_x = 20
         self.player_y = 400
         self.player = Player(self.SCREEN, 100, self.player_x, self.player_y)
+        self.speed = 4
 
         self.player_frames_id = 'idle'
         self.player_frames = self.player.idle()
@@ -28,7 +29,6 @@ class Game:
 
     def run(self):
         while self.is_running:
-
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
@@ -54,13 +54,18 @@ class Game:
             else:       
                 self.SCREEN.blit(frame, (0, 0))
 
-            self.levels[self.curr_level].draw_ground()
-            self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player_x, self.player_y))
-
             if self.curr_player_frame >= len(self.player_frames) - 1:
                 self.curr_player_frame = 0
             else:
                 self.curr_player_frame += 1
+
+            if self.player_frames_id == 'run_left':
+                self.player_x -= self.speed
+            if self.player_frames_id == 'run_right':
+                self.player_x += self.speed
+
+            self.levels[self.curr_level].draw_ground()
+            self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player_x, self.player_y))
 
             pygame.display.flip()
 
