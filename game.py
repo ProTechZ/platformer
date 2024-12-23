@@ -18,7 +18,7 @@ class Game:
         self.levels = [Level1(self.SCREEN)]
         self.curr_level = 0
 
-        self.player = Player(screen=self.SCREEN, size=150)
+        self.player = Player(screen=self.SCREEN, size=100)
         
     def run(self):
         while self.is_running:
@@ -38,7 +38,9 @@ class Game:
                 self.SCREEN.blit(frame, (0, 0))
 
             self.levels[self.curr_level].draw_ground()
-            self.player.run()
+            player = self.player.run_left()
+
+            self.SCREEN.blit(player, (40, 200))
 
             pygame.display.flip()
 

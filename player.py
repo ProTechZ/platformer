@@ -7,7 +7,8 @@ class Player(pygame.sprite.Sprite):
         super().__init__(*groups)
 
         self.idle_frame = 0
-        self.running_frame = 0
+        self.running_r_frame = 0
+        self.running_l_frame = 0
 
         self.SCREEN = screen
         self.SIZE = size
@@ -28,18 +29,30 @@ class Player(pygame.sprite.Sprite):
         else:
             self.idle_frame += 1
 
-        return self.rescale_player(player, self.size)
+        return self.rescale_player(player, self.SIZE)
 
-    def run(self):
+    def run_right(self):
         base = getenv('BASE')
-        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{self.running_frame}.png")
+        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{self.running_r_frame}.png")
         
-        if self.running_frame == 11:
-            self.running_frame = 0
+        if self.running_r_frame == 11:
+            self.running_r_frame = 0
         else:
-            self.running_frame += 1
+            self.running_r_frame += 1
 
-        return self.rescale_player(player, self.size)
+        return self.rescale_player(player, self.SIZE)
+    
+    def run_left(self):
+        base = getenv('BASE')
+        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{self.running_l_frame}.png")
+        player = pygame.transform.flip(player, True, False)
+        
+        if self.running_l_frame == 11:
+            self.running_l_frame = 0
+        else:
+            self.running_l_frame += 1
+
+        return self.rescale_player(player, self.SIZE)
 
 
     
