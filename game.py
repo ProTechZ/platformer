@@ -38,7 +38,7 @@ class Game:
                 self.SCREEN.blit(frame, (0, 0))
 
             self.levels[self.curr_level].draw_ground()
-            self.player.idle()
+            self.player.run()
 
             pygame.display.flip()
 

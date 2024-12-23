@@ -7,6 +7,7 @@ class Player(pygame.sprite.Sprite):
         super().__init__(*groups)
 
         self.idle_frame = 0
+        self.running_frame = 0
         self.SCREEN = screen
 
     def rescale_player(self, player, size):
@@ -25,7 +26,18 @@ class Player(pygame.sprite.Sprite):
         else:
             self.idle_frame += 1
 
-        self.SCREEN.blit(self.rescale_player(player, 100), (20, 400))
+        self.SCREEN.blit(self.rescale_player(player, 150), (20, 400))
+
+    def run(self):
+        base = getenv('BASE')
+        player  = pygame.image.load(f"{base}platformer\\images\\player assets\\Running\\Player_Running_{self.running_frame}.png")
+        
+        if self.running_frame == 11:
+            self.running_frame = 0
+        else:
+            self.running_frame += 1
+
+        self.SCREEN.blit(self.rescale_player(player, 150), (20, 400))
 
 
     
