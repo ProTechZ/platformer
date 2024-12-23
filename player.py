@@ -26,7 +26,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.idle_frame += 1
 
-        self.SCREEN.blit(self.rescale_player(player, 150), (20, 400))
+        return self.rescale_player(player, 150)
 
     def run(self):
         base = getenv('BASE')
@@ -37,7 +37,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.running_frame += 1
 
-        self.SCREEN.blit(self.rescale_player(player, 150), (20, 400))
+        return self.rescale_player(player, 150)
 
 
     
