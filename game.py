@@ -18,7 +18,7 @@ class Game:
         self.levels = [Level1(self.SCREEN)]
         self.curr_level = 0
 
-        self.player = Player(screen=self.SCREEN)
+        self.player = Player(screen=self.SCREEN, size=150)
         
     def run(self):
         while self.is_running:

@@ -3,12 +3,14 @@ from os import getenv
 import cv2
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, *groups, screen):
+    def __init__(self, *groups, screen, size):
         super().__init__(*groups)
 
         self.idle_frame = 0
         self.running_frame = 0
+
         self.SCREEN = screen
+        self.SIZE = size
 
     def rescale_player(self, player, size):
         width = int(player.get_width())
@@ -26,7 +28,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.idle_frame += 1
 
-        return self.rescale_player(player, 150)
+        return self.rescale_player(player, self.size)
 
     def run(self):
         base = getenv('BASE')
@@ -37,7 +39,7 @@ class Player(pygame.sprite.Sprite):
         else:
             self.running_frame += 1
 
-        return self.rescale_player(player, 150)
+        return self.rescale_player(player, self.size)
 
 
     
