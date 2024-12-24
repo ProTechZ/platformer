@@ -46,14 +46,16 @@ class Game:
                             self.curr_player_frame = 0
                             self.player_action = 'run_right'
       
-            self.SCREEN.fill((255, 255, 255))  
-            frame, movement = self.CAMERA.start()                                                                                                                                                                                                                                                                                         
-              
-            if frame is None:
+            self.SCREEN.fill((255, 255, 255))
+
+            camera, movement = self.CAMERA.start()
+                                                                                                                                                                                                                                                                                        
+            if camera is None:
                 self.is_running = False
             else:       
-                self.SCREEN.blit(frame, (0, 0))
+                self.SCREEN.blit(camera, (0, 0))
 
+            # resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
                 self.curr_player_frame = 0
             else:
@@ -62,7 +64,6 @@ class Game:
             # the 2nd statements are checking if the player will touch the border on its next movement
             if self.player_action == 'run_left' and not self.player_x - self.speed <= 0:
                 self.player_x -= self.speed
-
             elif self.player_action == 'run_right' and not self.player_x + self.player.SIZE + self.speed >= self.WIDTH:
                 self.player_x += self.speed
 
