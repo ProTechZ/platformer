@@ -1,8 +1,8 @@
 import pygame
 
 from hand_detection import HandDetectorWindow
-from level import Level1
-from player import Player
+from assets.level import Level1
+from assets.player import Player
 
 pygame.init()
 
@@ -18,9 +18,9 @@ class Game:
         self.levels = [Level1(self.SCREEN)]
         self.curr_level = 0
 
-        self.player_x = 20
-        self.player_y = 400
         self.player = Player(self.SCREEN, 100)
+        self.player_x = 20
+        self.player_y = 510
         self.speed = 4
 
         self.player_action = 'idle'

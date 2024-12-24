@@ -21,7 +21,7 @@ class Level:
 
     def draw_ground(self):
         base = getenv('BASE')
-        ground = pygame.image.load(f"{base}\\platformer\\images\\ground.png").convert()
+        ground = pygame.image.load(f"{base}\\platformer\\resources\\ground.png").convert()
 
         for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
