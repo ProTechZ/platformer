@@ -3,11 +3,8 @@ from os import getenv
 import cv2
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self, screen, size, player_x, player_y, *groups):
+    def __init__(self, screen, size, *groups):
         super().__init__(*groups)
-
-        self.player_x = player_x
-        self.player_y = player_y
 
         self.SCREEN = screen
         self.SIZE = size

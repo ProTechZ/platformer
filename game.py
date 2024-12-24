@@ -20,10 +20,10 @@ class Game:
 
         self.player_x = 20
         self.player_y = 400
-        self.player = Player(self.SCREEN, 100, self.player_x, self.player_y)
+        self.player = Player(self.SCREEN, 100)
         self.speed = 4
 
-        self.player_frames_id = 'idle'
+        self.player_action = 'idle'
         self.player_frames = self.player.idle()
         self.curr_player_frame = 0
 
@@ -36,19 +36,19 @@ class Game:
                     if event.key == pygame.K_q:
                         self.is_running=False 
                     if event.key == pygame.K_LEFT:
-                        if not self.player_frames_id == 'run_left':
+                        if not self.player_action == 'run_left':
                             self.player_frames = self.player.run_left()
                             self.curr_player_frame = 0
-                            self.player_frames_id = 'run_left'
+                            self.player_action = 'run_left'
                     if event.key == pygame.K_RIGHT:
-                        if not self.player_frames_id == 'run_right':
+                        if not self.player_action == 'run_right':
                             self.player_frames = self.player.run_right()
                             self.curr_player_frame = 0
-                            self.player_frames_id = 'run_right'
+                            self.player_action = 'run_right'
       
             self.SCREEN.fill((255, 255, 255))  
-            frame, movement = self.CAMERA.start()
-
+            frame, movement = self.CAMERA.start()                                                                                                                                                                                                                                                                                         
+              
             if frame is None:
                 self.is_running = False
             else:       
@@ -59,9 +59,11 @@ class Game:
             else:
                 self.curr_player_frame += 1
 
-            if self.player_frames_id == 'run_left':
+            # the 2nd statements are checking if the player will touch the border on its next movement
+            if self.player_action == 'run_left' and not self.player_x - self.speed <= 0:
                 self.player_x -= self.speed
-            if self.player_frames_id == 'run_right':
+
+            elif self.player_action == 'run_right' and not self.player_x + self.player.SIZE + self.speed >= self.WIDTH:
                 self.player_x += self.speed
 
             self.levels[self.curr_level].draw_ground()
