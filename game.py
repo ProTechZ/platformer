@@ -45,6 +45,10 @@ class Game:
                             self.player_frames = self.player.run_right()
                             self.curr_player_frame = 0
                             self.player_action = 'run_right'
+                    if event.key == pygame.K_SPACE:
+                        self.player_frames = self.player.jump_start()
+                        self.curr_player_frame = 0
+                        self.player_action = 'jump_start'
       
             self.SCREEN.fill((255, 255, 255))
 
@@ -58,8 +62,23 @@ class Game:
             # resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
                 self.curr_player_frame = 0
+
+                if self.player_action == 'jump_start':
+                    self.player_frames = self.player.jump_loop()
+                    self.player_action = 'jump_loop'
+                elif self.player_action == 'jump_loop':
+                    self.player_frames = self.player.jump_end()
+                    self.player_action = 'jump_end'
+                elif self.player_action == 'jump_end':
+                    self.player_frames = self.player.idle()
+                    self.player_action = 'idle'
+
             else:
                 self.curr_player_frame += 1
+                if self.player_action == 'jump_loop':
+                    self.player_y -= 20
+                if self.player_action == 'jump_end':
+                    self.player_y += 20
 
             # the 2nd statements are checking if the player will touch the border on its next movement
             if self.player_action == 'run_left' and not self.player_x - self.speed <= 0:
