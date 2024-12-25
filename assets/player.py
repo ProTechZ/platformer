@@ -1,6 +1,6 @@
 import pygame
 from os import getenv
-import cv2
+from itertools import chain
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, screen, size, *groups):
@@ -31,6 +31,26 @@ class Player(pygame.sprite.Sprite):
     def run_left(self):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
+        player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
+
+        return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
+    
+    def jump_start(self):
+        base = getenv('BASE')
+        player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_{i}.png") for i in range(6)]
+        player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
+
+        return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
+    
+    def jump_loop(self):
+        base = getenv('BASE')
+        player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Loop\\Player_Jump_Loop_{i}.png") for i in range(6)]
+        player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
+
+        return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
+    def jump_end(self):
+        base = getenv('BASE')
+        player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Falling Down\\Player_Falling_Down_{i}.png") for i in range(6)]
         player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
 
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
