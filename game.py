@@ -3,6 +3,7 @@ import pygame
 from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
+from itertools import chain
 
 pygame.init()
 
@@ -46,9 +47,10 @@ class Game:
                             self.curr_player_frame = 0
                             self.player_action = 'run_right'
                     if event.key == pygame.K_SPACE:
-                        self.player_frames = self.player.jump_start()
-                        self.curr_player_frame = 0
-                        self.player_action = 'jump_start'
+                        if not self.player_action == 'jump_start' and not self.player_action == 'jump_loop' and not self.player_action == 'jump_end':
+                            self.player_frames = self.player.jump_start()
+                            # self.curr_player_frame = 0
+                            self.player_action = 'jump_start'
       
             self.SCREEN.fill((255, 255, 255))
 
@@ -76,9 +78,11 @@ class Game:
             else:
                 self.curr_player_frame += 1
                 if self.player_action == 'jump_loop':
-                    self.player_y -= 20
+                    self.player_y -= 10
+                    self.player_x += 5
                 if self.player_action == 'jump_end':
-                    self.player_y += 20
+                    self.player_y += 10
+                    self.player_x += 5
 
             # the 2nd statements are checking if the player will touch the border on its next movement
             if self.player_action == 'run_left' and not self.player_x - self.speed <= 0:

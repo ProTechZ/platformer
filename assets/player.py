@@ -1,6 +1,5 @@
 import pygame
 from os import getenv
-from itertools import chain
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, screen, size, *groups):
