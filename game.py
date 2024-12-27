@@ -20,9 +20,6 @@ class Game:
         self.curr_level_ind = 0
 
         self.player = Player(self.SCREEN, 100)
-        self.player_x = 20
-        self.player_y = 510
-        self.speed = 4
 
         self.player_action = 'idle'
         self.player_frames = self.player.idle()
@@ -78,21 +75,19 @@ class Game:
             else:
                 self.curr_player_frame += 1
                 if self.player_action == 'jump_loop':
-                    self.player_y -= 20
-                    self.player_x += 5
+                    self.player.jump()
                 if self.player_action == 'jump_end':
-                    self.player_y += 20
-                    self.player_x += 5
+                    self.player.fall()
 
             # the 2nd statements are checking if the player will touch the border on its next movement
-            if self.player_action == 'run_left' and not self.player_x - self.speed <= 0:
-                self.player_x -= self.speed
-            elif self.player_action == 'run_right' and not self.player_x + self.player.SIZE + self.speed >= self.WIDTH:
-                self.player_x += self.speed
+            if self.player_action == 'run_left' and not self.player.x - self.player.MOVING_SPEED <= 0:
+                self.player.x -= self.player.MOVING_SPEED
+            elif self.player_action == 'run_right' and not self.player.x + self.player.SIZE + self.player.MOVING_SPEED >= self.WIDTH:
+                self.player.x += self.player.MOVING_SPEED
 
             curr_level.draw_ground()
             curr_level.draw_platforms()
-            self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player_x, self.player_y))
+            self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player.x, self.player.y))
 
             pygame.display.flip()
 

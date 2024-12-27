@@ -8,6 +8,21 @@ class Player(pygame.sprite.Sprite):
         self.SCREEN = screen
         self.SIZE = size
 
+        self.MOVING_SPEED = 4
+        self.FALLING_SPEED = 10
+        self.GRAVITY = 5
+
+        self.x = 20
+        self.y = 510
+
+    def jump(self):
+        self.y -= 20
+        self.x += 10
+
+    def fall(self):
+        self.y += 20
+        self.x += 10
+
     def rescale_player(self, player, size):
         width = int(player.get_width())
         height = int(player.get_height())
