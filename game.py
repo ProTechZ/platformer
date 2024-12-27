@@ -3,7 +3,7 @@ import pygame
 from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
-from itertools import chain
+from assets.platform import Platform
 
 pygame.init()
 
@@ -39,12 +39,12 @@ class Game:
                     if event.key == pygame.K_LEFT:
                         if self.player_action == 'idle' or self.player_action == 'run_right':
                             self.player_frames = self.player.run_left()
-                            self.curr_player_frame = 0
+                            # self.curr_player_frame = 0
                             self.player_action = 'run_left'
                     if event.key == pygame.K_RIGHT:
                         if self.player_action == 'idle' or self.player_action == 'run_left':
                             self.player_frames = self.player.run_right()
-                            self.curr_player_frame = 0
+                            # self.curr_player_frame = 0
                             self.player_action = 'run_right'
                     if event.key == pygame.K_SPACE:
                         if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
@@ -52,6 +52,8 @@ class Game:
                             self.player_action = 'jump_start'
       
             self.SCREEN.fill((255, 255, 255))
+            platform = Platform(self.SCREEN, 200, 50)
+            platform.draw(200, 300)
 
             camera, movement = self.CAMERA.start()
                                                                                                                                                                                                                                                                                         
@@ -77,10 +79,10 @@ class Game:
             else:
                 self.curr_player_frame += 1
                 if self.player_action == 'jump_loop':
-                    self.player_y -= 10
+                    self.player_y -= 20
                     self.player_x += 5
                 if self.player_action == 'jump_end':
-                    self.player_y += 10
+                    self.player_y += 20
                     self.player_x += 5
 
             # the 2nd statements are checking if the player will touch the border on its next movement
