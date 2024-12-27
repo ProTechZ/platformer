@@ -37,19 +37,18 @@ class Game:
                     if event.key == pygame.K_q:
                         self.is_running=False 
                     if event.key == pygame.K_LEFT:
-                        if not self.player_action == 'run_left':
+                        if self.player_action == 'idle' or self.player_action == 'run_right':
                             self.player_frames = self.player.run_left()
                             self.curr_player_frame = 0
                             self.player_action = 'run_left'
                     if event.key == pygame.K_RIGHT:
-                        if not self.player_action == 'run_right':
+                        if self.player_action == 'idle' or self.player_action == 'run_left':
                             self.player_frames = self.player.run_right()
                             self.curr_player_frame = 0
                             self.player_action = 'run_right'
                     if event.key == pygame.K_SPACE:
-                        if not self.player_action == 'jump_start' and not self.player_action == 'jump_loop' and not self.player_action == 'jump_end':
+                        if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
                             self.player_frames = self.player.jump_start()
-                            # self.curr_player_frame = 0
                             self.player_action = 'jump_start'
       
             self.SCREEN.fill((255, 255, 255))
