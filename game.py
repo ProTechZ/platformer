@@ -17,7 +17,7 @@ class Game:
         self.is_running = True
 
         self.levels = [Level1(self.SCREEN)]
-        self.curr_level = 0
+        self.curr_level_ind = 0
 
         self.player = Player(self.SCREEN, 100)
         self.player_x = 20
@@ -30,6 +30,8 @@ class Game:
 
     def run(self):
         while self.is_running:
+            curr_level = self.levels[self.curr_level_ind]
+
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     self.is_running = False
@@ -49,12 +51,9 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
                             self.player_frames = self.player.jump_start()
-                            self.player_action = 'jump_start'
-      
-            self.SCREEN.fill((255, 255, 255))
-            platform = Platform(self.SCREEN, 200, 50)
-            platform.draw(200, 300)
+                            self.player_action = 'jump_start'           
 
+            self.SCREEN.fill((255, 255, 255))
             camera, movement = self.CAMERA.start()
                                                                                                                                                                                                                                                                                         
             if camera is None:
@@ -91,7 +90,8 @@ class Game:
             elif self.player_action == 'run_right' and not self.player_x + self.player.SIZE + self.speed >= self.WIDTH:
                 self.player_x += self.speed
 
-            self.levels[self.curr_level].draw_ground()
+            curr_level.draw_ground()
+            curr_level.draw_platforms()
             self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player_x, self.player_y))
 
             pygame.display.flip()

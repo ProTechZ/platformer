@@ -1,6 +1,7 @@
 import pygame
 from dotenv import load_dotenv
 from os import getenv
+from assets.platform import Platform
 
 load_dotenv()
 
@@ -12,12 +13,11 @@ class Level:
         self.SCREEN_WIDTH = self.SCREEN.get_width()
         self.SCREEN_HEIGHT = self.SCREEN.get_height()
 
-        self.PLATFORM_HEIGHT = 10
-        self.PLATFORM_WIDTH = 50
-
-    def draw_platforms(self, platforms_coords):
-        for x, y in platforms_coords:
-            pygame.draw.rect(self.SCREEN, (0, 0, 0), (x, y, self.PLATFORM_WIDTH, self.PLATFORM_HEIGHT))
+    def draw_platforms(self, platforms_details):
+        for x, y, width, height in  platforms_details:
+            platform = Platform(self.SCREEN, width, height)
+            self.platforms.append(platform)
+            platform.draw(x, y)
 
     def draw_ground(self):
         base = getenv('BASE')
@@ -31,7 +31,7 @@ class Level1(Level):
         super().__init__(screen)
 
     def draw_platforms(self):
-        platforms_coords = [(300, 300)]
+        platforms_details = [(300, 300, 200, 50)]
 
-        return super().draw_platforms(platforms_coords)
+        return super().draw_platforms(platforms_details)
     
