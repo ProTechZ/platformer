@@ -38,12 +38,10 @@ class Game:
                     if event.key == pygame.K_LEFT:
                         if self.player_action == 'idle' or self.player_action == 'run_right':
                             self.player_frames = self.player.run_left()
-                            # self.curr_player_frame = 0
                             self.player_action = 'run_left'
                     if event.key == pygame.K_RIGHT:
                         if self.player_action == 'idle' or self.player_action == 'run_left':
                             self.player_frames = self.player.run_right()
-                            # self.curr_player_frame = 0
                             self.player_action = 'run_right'
                     if event.key == pygame.K_SPACE:
                         if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
@@ -80,9 +78,9 @@ class Game:
                     self.player.fall()
 
             # the 2nd statements are checking if the player will touch the border on its next movement
-            if self.player_action == 'run_left' and not self.player.x - self.player.MOVING_SPEED <= 0:
+            if self.player_action == 'run_left' and not self.player.x + 25 <= 0:
                 self.player.x -= self.player.MOVING_SPEED
-            elif self.player_action == 'run_right' and not self.player.x + self.player.SIZE + self.player.MOVING_SPEED >= self.WIDTH:
+            elif self.player_action == 'run_right' and not self.player.x + self.player.SIZE - 25 >= self.WIDTH:
                 self.player.x += self.player.MOVING_SPEED
 
             curr_level.draw_ground()
