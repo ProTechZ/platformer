@@ -21,7 +21,6 @@ class Platform(pygame.sprite.Sprite):
         og_width = platform_img.get_width()
         pygame.transform.scale(platform_img, (og_width, self.HEIGHT)) # only scaling height
 
-
         # instead of stretching the image to fit the width, we just display multiple platforms right next to each other uptil the width
         num_loop = round(self.WIDTH / og_width)
 

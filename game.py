@@ -7,11 +7,15 @@ from assets.platform import Platform
 
 pygame.init()
 
+
 class Game:
     def __init__(self, width, height):
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
+        self.CLOCK = pygame.time.Clock()
+        self.FPS = 60
+
         self.CAMERA = HandDetectorWindow()
 
         self.is_running = True
@@ -27,6 +31,7 @@ class Game:
 
     def run(self):
         while self.is_running:
+            self.CLOCK.tick(self.FPS)
             curr_level = self.levels[self.curr_level_ind]
 
             for event in pygame.event.get():
@@ -46,7 +51,7 @@ class Game:
                     if event.key == pygame.K_SPACE:
                         if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
                             self.player_frames = self.player.jump_start()
-                            self.player_action = 'jump_start'           
+                            self.player_action = 'jump_start'
 
             self.SCREEN.fill((255, 255, 255))
             camera, movement = self.CAMERA.start()

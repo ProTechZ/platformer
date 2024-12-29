@@ -32,8 +32,8 @@ class Level1(Level):
 
     def draw_platforms(self):
         platforms_details = [
-            (200, 500, 500, 50),
-            (200, 300, 200, 50),
+            (200, 475, 200, 50),
+            (450, 400, 200, 50),
         ]
 
         return super().draw_platforms(platforms_details)

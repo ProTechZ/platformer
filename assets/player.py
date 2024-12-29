@@ -14,13 +14,10 @@ class Player(pygame.sprite.Sprite):
         self.x = 20
         self.y = 487
 
-    def jump(self):
-        self.y -= self.FALLING_SPEED
-        self.x += 10
-
     def fall(self):
         self.y += self.FALLING_SPEED
         self.x += 10
+        self.FALLING_SPEED -= 5
 
     def rescale_player(self, player, size):
         width = int(player.get_width())
@@ -47,7 +44,7 @@ class Player(pygame.sprite.Sprite):
         player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
 
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
-    
+
     def jump_start(self):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_{i}.png") for i in range(6)]
