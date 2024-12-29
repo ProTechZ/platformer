@@ -29,6 +29,9 @@ class Game:
         self.player_frames = self.player.idle()
         self.curr_player_frame = 0
 
+        self.frame_counter = 0
+        self.FRAME_DELAY = 2
+
     def run(self):
         while self.is_running:
             self.CLOCK.tick(self.FPS)
@@ -61,6 +64,8 @@ class Game:
             else:       
                 self.SCREEN.blit(camera, (0, 0))
 
+            
+
             # resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
                 self.curr_player_frame = 0
@@ -76,7 +81,12 @@ class Game:
                     self.player_action = 'idle'
 
             else:
-                self.curr_player_frame += 1
+
+                self.frame_counter += 1
+                if self.frame_counter >= self.FRAME_DELAY:
+                    self.curr_player_frame += 1
+                    self.frame_counter = 0
+
                 if self.player_action == 'jump_loop':
                     self.player.jump()
                 if self.player_action == 'jump_end':
