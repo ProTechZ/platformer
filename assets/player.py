@@ -9,10 +9,10 @@ class Player(pygame.sprite.Sprite):
         self.SIZE = size
 
         self.MOVING_SPEED = 4
-        self.FALLING_SPEED = 10
+        self.FALLING_SPEED = 20
 
         self.x = 20
-        self.y = 510
+        self.y = 487
 
     def jump(self):
         self.y -= self.FALLING_SPEED

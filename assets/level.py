@@ -31,7 +31,7 @@ class Level1(Level):
         super().__init__(screen)
 
     def draw_platforms(self):
-        platforms_details = [(300, 300, 200, 50)]
+        platforms_details = [(200, 500, 200, 50)]
 
         return super().draw_platforms(platforms_details)
     
