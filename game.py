@@ -32,29 +32,32 @@ class Game:
         self.frame_counter = 0
         self.FRAME_DELAY = 2
 
+    def event_loop(self):
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                self.is_running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_q:
+                    self.is_running=False 
+                if event.key == pygame.K_LEFT:
+                    if self.player_action == 'idle' or self.player_action == 'run_right':
+                        self.player_frames = self.player.run_left()
+                        self.player_action = 'run_left'
+                if event.key == pygame.K_RIGHT:
+                    if self.player_action == 'idle' or self.player_action == 'run_left':
+                        self.player_frames = self.player.run_right()
+                        self.player_action = 'run_right'
+                if event.key == pygame.K_SPACE:
+                    if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
+                        self.player_frames = self.player.jump_start()
+                        self.player_action = 'jump_start'
+
     def run(self):
         while self.is_running:
             self.CLOCK.tick(self.FPS)
+            self.event_loop()
+            
             curr_level = self.levels[self.curr_level_ind]
-
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.is_running = False
-                if event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_q:
-                        self.is_running=False 
-                    if event.key == pygame.K_LEFT:
-                        if self.player_action == 'idle' or self.player_action == 'run_right':
-                            self.player_frames = self.player.run_left()
-                            self.player_action = 'run_left'
-                    if event.key == pygame.K_RIGHT:
-                        if self.player_action == 'idle' or self.player_action == 'run_left':
-                            self.player_frames = self.player.run_right()
-                            self.player_action = 'run_right'
-                    if event.key == pygame.K_SPACE:
-                        if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
-                            self.player_frames = self.player.jump_start()
-                            self.player_action = 'jump_start'
 
             self.SCREEN.fill((255, 255, 255))
             camera, movement = self.CAMERA.start()
@@ -63,8 +66,6 @@ class Game:
                 self.is_running = False
             else:       
                 self.SCREEN.blit(camera, (0, 0))
-
-            
 
             # resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
