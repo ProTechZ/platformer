@@ -7,7 +7,6 @@ from assets.platform import Platform
 
 pygame.init()
 
-
 class Game:
     def __init__(self, width, height):
         self.WIDTH = int(width)
@@ -29,9 +28,6 @@ class Game:
         self.player_frames = self.player.idle()
         self.curr_player_frame = 0
 
-        self.frame_counter = 0
-        self.FRAME_DELAY = 2
-
     def event_loop(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -52,20 +48,25 @@ class Game:
                         self.player_frames = self.player.jump_start()
                         self.player_action = 'jump_start'
 
+    def camera(self):
+        camera, movement = self.CAMERA.start()
+                                                                                                                                                                                                                                                                                        
+        if camera is None:
+            self.is_running = False
+        else:       
+            self.SCREEN.blit(camera, (0, 0))
+            return movement
+                                                                                                                                                                                                                                                                                        
     def run(self):
         while self.is_running:
             self.CLOCK.tick(self.FPS)
             self.event_loop()
             
+            movement = self.camera()
             curr_level = self.levels[self.curr_level_ind]
 
             self.SCREEN.fill((255, 255, 255))
-            camera, movement = self.CAMERA.start()
-                                                                                                                                                                                                                                                                                        
-            if camera is None:
-                self.is_running = False
-            else:       
-                self.SCREEN.blit(camera, (0, 0))
+            
 
             # resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
@@ -82,11 +83,6 @@ class Game:
                     self.player_action = 'idle'
 
             else:
-
-                self.frame_counter += 1
-                if self.frame_counter >= self.FRAME_DELAY:
-                    self.curr_player_frame += 1
-                    self.frame_counter = 0
 
                 if self.player_action == 'jump_loop':
                     self.player.jump()
