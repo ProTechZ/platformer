@@ -31,7 +31,7 @@ class HandDetectorWindow:
             # moving right means the pos value increases so the cur_pos would be greater
             elif (curr_pos - self.last_pos) >= 0.01:
                 self.movement = 2
-            
+
             else:
                 self.movement = 0
 
@@ -48,7 +48,7 @@ class HandDetectorWindow:
         frame = cv2.cvtColor(frame,cv2.COLOR_BGR2RGB)
         frame = numpy.rot90(frame)
         frame = pygame.surfarray.make_surface(frame) 
-        
+
         return frame
 
     def start(self):

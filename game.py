@@ -4,6 +4,7 @@ from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
 from assets.platform import Platform
+from constants import FPS, GRAVITY, GROUND_LEVEL
 
 pygame.init()
 
@@ -12,8 +13,10 @@ class Game:
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
+        
         self.CLOCK = pygame.time.Clock()
-        self.FPS = 60
+        self.frame_counter = 0
+        self.FRAME_DELAY = 5
 
         self.CAMERA = HandDetectorWindow()
 
@@ -44,9 +47,11 @@ class Game:
                         self.player_frames = self.player.run_right()
                         self.player_action = 'run_right'
                 if event.key == pygame.K_SPACE:
-                    if not self.player_action in ['jump_start', 'jump_loop', 'jump_end']:
-                        self.player_frames = self.player.jump_start()
+                    if not 'jump' in self.player_action:
                         self.player_action = 'jump_start'
+                        self.player.velocity_y = self.player.jump_force
+                        self.player_frames = self.player.jump_start()
+                        self.curr_level_frame = 0
 
     def camera(self):
         camera, movement = self.CAMERA.start()
@@ -56,39 +61,55 @@ class Game:
         else:       
             self.SCREEN.blit(camera, (0, 0))
             return movement
-                                                                                                                                                                                                                                                                                        
+                                                                                                                                                                                                                                                                         
     def run(self):
         while self.is_running:
-            self.CLOCK.tick(self.FPS)
+            self.CLOCK.tick(FPS)
             self.event_loop()
-            
+
             movement = self.camera()
             curr_level = self.levels[self.curr_level_ind]
 
             self.SCREEN.fill((255, 255, 255))
-            
 
-            # resets the frame count if it reaches the end of the animation
+            #resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
                 self.curr_player_frame = 0
+                
+                if self.player_action == 'jump_start':
+                    self.player_action = 'jump_loop'
+                    self.player_frames = self.player.jump_loop()
+                elif self.player_action =='jump_loop':
+                    self.player_action = 'jump_end'
+                    self.player_frames = self.player.jump_end()
+            else:
+                if not 'jump' in self.player_action:
+                    self.curr_player_frame += 1
+
+            pygame.draw.rect(self.SCREEN, (255, 0, 0), (0, self.player.y, self.WIDTH, 1))
+            pygame.draw.circle(self.SCREEN, (0, 0, 0), (self.player.x, self.player.y), 5)
+
+            if 'jump' in self.player_action:
+
+                self.frame_counter += 1
+                if self.frame_counter >= self.FRAME_DELAY:
+                    self.curr_player_frame += 1
+                    self.frame_counter = 0
 
                 if self.player_action == 'jump_start':
-                    self.player_frames = self.player.jump_loop()
-                    self.player_action = 'jump_loop'
-                elif self.player_action == 'jump_loop':
-                    self.player_frames = self.player.jump_end()
-                    self.player_action = 'jump_end'
+                    self.player.velocity_y += GRAVITY
+                    self.player.y -= self.player.velocity_y    
                 elif self.player_action == 'jump_end':
+                    self.player.velocity_y += GRAVITY
+                    self.player.y += self.player.velocity_y
+
+                if self.player.y >= GROUND_LEVEL:
+                    self.player.y = GROUND_LEVEL
+                    self.player.velocity_y = 0
+                    self.curr_player_frame = 0
                     self.player_frames = self.player.idle()
                     self.player_action = 'idle'
-
-            else:
-
-                if self.player_action == 'jump_loop':
-                    self.player.jump()
-                if self.player_action == 'jump_end':
-                    self.player.fall()
-
+            
             # the 2nd statements are checking if the player will touch the border on its next movement
             if self.player_action == 'run_left' and not self.player.x + 25 <= 0:
                 self.player.x -= self.player.MOVING_SPEED

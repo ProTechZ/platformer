@@ -25,7 +25,7 @@ class Level:
 
         for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
-    
+
 class Level1(Level):
     def __init__(self, screen):
         super().__init__(screen)
