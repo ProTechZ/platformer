@@ -51,7 +51,7 @@ class Game:
                         self.player_action = 'jump_start'
                         self.player.velocity_y = self.player.jump_force
                         self.player_frames = self.player.jump_start()
-                        self.curr_level_frame = 0
+                        self.curr_player_frame = 0
 
     def camera(self):
         camera, movement = self.CAMERA.start()
@@ -68,7 +68,7 @@ class Game:
             self.event_loop()
 
             movement = self.camera()
-            curr_level = self.levels[self.curr_level_ind]
+            level = self.levels[self.curr_level_ind]
 
             self.SCREEN.fill((255, 255, 255))
 
@@ -116,8 +116,8 @@ class Game:
             elif self.player_action == 'run_right' and not self.player.x + self.player.SIZE - 25 >= self.WIDTH:
                 self.player.x += self.player.MOVING_SPEED
 
-            curr_level.draw_ground()
-            curr_level.draw_platforms()
+            level.draw_ground()
+            level.draw_platforms()
             self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player.x, self.player.y))
 
             pygame.display.flip()
