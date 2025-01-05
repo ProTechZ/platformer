@@ -10,8 +10,9 @@ class Player(pygame.sprite.Sprite):
         self.SIZE = size
 
         self.MOVING_SPEED = 4
-        self.jump_force = 5
+        self.jump_force = .5
         self.velocity_y = 0
+        self.velocity_x = 0
 
         self.x = 20
         self.y = GROUND_LEVEL

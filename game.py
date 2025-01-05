@@ -50,6 +50,7 @@ class Game:
                     if not 'jump' in self.player_action:
                         self.player_action = 'jump_start'
                         self.player.velocity_y = self.player.jump_force
+                        self.player.velocity_x = self.player.jump_force
                         self.player_frames = self.player.jump_start()
                         self.curr_player_frame = 0
 
@@ -98,14 +99,17 @@ class Game:
 
                 if self.player_action == 'jump_start':
                     self.player.velocity_y += GRAVITY
-                    self.player.y -= self.player.velocity_y    
+                    self.player.y -= self.player.velocity_y
                 elif self.player_action == 'jump_end':
                     self.player.velocity_y += GRAVITY
                     self.player.y += self.player.velocity_y
 
-                if self.player.y >= GROUND_LEVEL:
+                self.player.x += self.player.velocity_x
+
+                if self.player.y >= GROUND_LEVEL + 5:
                     self.player.y = GROUND_LEVEL
                     self.player.velocity_y = 0
+                    self.player.velocity_x = 0
                     self.curr_player_frame = 0
                     self.player_frames = self.player.idle()
                     self.player_action = 'idle'
