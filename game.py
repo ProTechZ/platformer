@@ -71,7 +71,6 @@ class Game:
 
             movement = self.camera()
             level = self.levels[self.curr_level_ind]
-            player = self.player
 
             self.SCREEN.fill((255, 255, 255))
 
@@ -100,7 +99,7 @@ class Game:
                     self.curr_player_frame += 1
                     self.frame_counter = 0
 
-                if self.player_action == 'jump_start':
+                if self.player_action == 'jump_start' or self.player_action == 'jump_loop':
                     self.player.velocity_y -= self.GRAVITY
                     self.GRAVITY += 0.01
                     self.player.y -= self.player.velocity_y
