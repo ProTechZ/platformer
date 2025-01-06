@@ -4,7 +4,7 @@ from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
 from assets.platform import Platform
-from constants import FPS, GRAVITY, GROUND_LEVEL
+from constants import FPS, BASE_GRAVITY, GROUND_LEVEL
 
 pygame.init()
 
@@ -13,6 +13,7 @@ class Game:
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
+        self.GRAVITY = BASE_GRAVITY
         
         self.CLOCK = pygame.time.Clock()
         self.frame_counter = 0
@@ -70,6 +71,7 @@ class Game:
 
             movement = self.camera()
             level = self.levels[self.curr_level_ind]
+            player = self.player
 
             self.SCREEN.fill((255, 255, 255))
 
@@ -83,6 +85,7 @@ class Game:
                 elif self.player_action =='jump_loop':
                     self.player_action = 'jump_end'
                     self.player_frames = self.player.jump_end()
+                    self.GRAVITY = BASE_GRAVITY
             else:
                 if not 'jump' in self.player_action:
                     self.curr_player_frame += 1
@@ -98,10 +101,12 @@ class Game:
                     self.frame_counter = 0
 
                 if self.player_action == 'jump_start':
-                    self.player.velocity_y += GRAVITY
+                    self.player.velocity_y -= self.GRAVITY
+                    self.GRAVITY += 0.01
                     self.player.y -= self.player.velocity_y
                 elif self.player_action == 'jump_end':
-                    self.player.velocity_y += GRAVITY
+                    self.player.velocity_y += self.GRAVITY
+                    self.GRAVITY += 0.01
                     self.player.y += self.player.velocity_y
 
                 self.player.x += self.player.velocity_x
@@ -113,6 +118,7 @@ class Game:
                     self.curr_player_frame = 0
                     self.player_frames = self.player.idle()
                     self.player_action = 'idle'
+                    self.GRAVITY = BASE_GRAVITY
             
             # the 2nd statements are checking if the player will touch the border on its next movement
             if self.player_action == 'run_left' and not self.player.x + 25 <= 0:
