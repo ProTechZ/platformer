@@ -132,9 +132,9 @@ class Game:
                 if not 'jump' in self.player_action:
                     self.curr_player_frame += 1
                 
-            if self.player_action == 'run_left':
+            if self.player_action == 'run_left' and not self.touching_lborder():
                 self.player.x -= self.player.MOVING_SPEED
-            elif self.player_action == 'run_right':
+            elif self.player_action == 'run_right' and not self.touching_rborder():
                 self.player.x += self.player.MOVING_SPEED
             elif 'jump' in self.player_action:
                 self.jump()
