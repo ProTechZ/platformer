@@ -5,8 +5,6 @@ from assets.level import Level1
 from assets.player import Player
 from assets.platform import Platform
 from constants import FPS, BASE_GRAVITY, GROUND_LEVEL
-import math
-
 
 pygame.init()
 
@@ -43,26 +41,30 @@ class Game:
                 if event.key == pygame.K_q:
                     self.is_running=False 
                 if event.key == pygame.K_LEFT:
-                    if self.player_action == 'idle' or self.player_action == 'run_right':
+                    if self.player_action in ['idle', 'run_right']:
                         self.player_frames = self.player.run_left()
                         self.player_action = 'run_left'
                         self.facing_left = True
 
                 if event.key == pygame.K_RIGHT:
-                    if self.player_action == 'idle' or self.player_action == 'run_left':
+                    if self.player_action in ['idle', 'run_left']:
                         self.player_frames = self.player.run_right()
                         self.player_action = 'run_right'
                         self.facing_left = False
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player_action:
-                        # self.facing_left = self.player_action == 'run_left'
-
                         self.player_action = 'jump_start'
                         self.player.velocity_y = self.player.jump_force_y
                         self.player.velocity_x = self.player.jump_force_x
                         self.player_frames = self.player.jump_start(left=self.facing_left)
                         self.curr_player_frame = 0
+
+    def touching_rborder(self):
+        return self.player.x + self.player.SIZE - 25 >= self.WIDTH
+    
+    def touching_lborder(self):
+        return self.player.x + 25 <= 0
 
     def camera(self):
         camera, movement = self.CAMERA.start()
@@ -82,6 +84,12 @@ class Game:
     def jump(self):
         self.extend_frames()
         
+        if self.touching_rborder() or self.touching_lborder():
+            self.player_action = 'jump_end'
+            self.player_frames = self.player.jump_end(left=self.facing_left)
+            self.player.velocity_y = self.player.jump_force_y
+            self.player.velocity_x = 0
+    
         if self.player_action == 'jump_start' or self.player_action == 'jump_loop':
             self.player.velocity_y -= self.GRAVITY
             self.player.y -= self.player.velocity_y
@@ -119,9 +127,8 @@ class Game:
                 elif self.player_action =='jump_loop':
                     self.player_action = 'jump_end'
                     self.player_frames = self.player.jump_end(left=self.facing_left)
-                    self.GRAVITY = BASE_GRAVITY
             else:
-                # we extend the frames in the jump function
+                # because we are already extending the frames in the jump function
                 if not 'jump' in self.player_action:
                     self.curr_player_frame += 1
                 
@@ -131,10 +138,6 @@ class Game:
                 self.player.x += self.player.MOVING_SPEED
             elif 'jump' in self.player_action:
                 self.jump()
-
-            if self.player.x + self.player.SIZE >= self.WIDTH:
-                self.player_action = 'idle'
-                self.player_frames = self.player.idle()
 
             level.draw_ground()
             level.draw_platforms()
