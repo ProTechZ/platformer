@@ -25,6 +25,11 @@ class Player(pygame.sprite.Sprite):
 
         return pygame.transform.scale(player, (size, height * scale))
 
+    def touch_ground(self):
+        self.y = GROUND_LEVEL
+        self.velocity_y = 0
+        self.velocity_x = 0
+
     def idle(self):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Idle\\Player_Idle_{i}.png") for i in range(18)]

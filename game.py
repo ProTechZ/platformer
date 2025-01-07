@@ -43,7 +43,7 @@ class Game:
                     if self.player_action == 'idle' or self.player_action == 'run_right':
                         self.player_frames = self.player.run_left()
                         self.player_action = 'run_left'
-                        
+
                 if event.key == pygame.K_RIGHT:
                     if self.player_action == 'idle' or self.player_action == 'run_left':
                         self.player_frames = self.player.run_right()
@@ -66,28 +66,28 @@ class Game:
             self.SCREEN.blit(camera, (0, 0))
             return movement
 
-    def jump(self):
+    def extend_frames(self):
         self.frame_counter += 1
         if self.frame_counter >= self.FRAME_DELAY:
             self.curr_player_frame += 1
             self.frame_counter = 0
 
+    def jump(self):
+        self.extend_frames()
+        
         if self.player_action == 'jump_start' or self.player_action == 'jump_loop':
             self.player.velocity_y -= self.GRAVITY
-            self.GRAVITY += 0.02
             self.player.y -= self.player.velocity_y
+
         elif self.player_action == 'jump_end':
             self.player.velocity_y += self.GRAVITY
-            self.GRAVITY += 0.02
             self.player.y += self.player.velocity_y
 
+        self.GRAVITY += 0.02
         self.player.x += self.player.velocity_x
 
         if self.player.y >= GROUND_LEVEL + 5:
-            self.player.y = GROUND_LEVEL
-            self.player.velocity_y = 0
-            self.player.velocity_x = 0
-            self.curr_player_frame = 0
+            self.player.touch_ground()
             self.player_frames = self.player.idle()
             self.player_action = 'idle'
             self.GRAVITY = BASE_GRAVITY
@@ -102,7 +102,7 @@ class Game:
 
             self.SCREEN.fill((255, 255, 255))
 
-            #resets the frame count if it reaches the end of the animation
+            # resets the frame count if it reaches the end of the animation
             if self.curr_player_frame >= len(self.player_frames) - 1:
                 self.curr_player_frame = 0
                 
@@ -114,6 +114,7 @@ class Game:
                     self.player_frames = self.player.jump_end()
                     self.GRAVITY = BASE_GRAVITY
             else:
+                # we extend the frames in the jump function
                 if not 'jump' in self.player_action:
                     self.curr_player_frame += 1
                 
