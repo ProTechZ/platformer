@@ -50,7 +50,7 @@ class Game:
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player_action:
                         self.player_action = 'jump_start'
-                        self.player.velocity_y = self.player.jump_force
+                        self.player.velocity_y = self.player.jump_force * 2
                         self.player.velocity_x = self.player.jump_force
                         self.player_frames = self.player.jump_start()
                         self.curr_player_frame = 0
@@ -63,7 +63,33 @@ class Game:
         else:       
             self.SCREEN.blit(camera, (0, 0))
             return movement
-                                                                                                                                                                                                                                                                         
+
+    def jump(self):
+        self.frame_counter += 1
+        if self.frame_counter >= self.FRAME_DELAY:
+            self.curr_player_frame += 1
+            self.frame_counter = 0
+
+        if self.player_action == 'jump_start' or self.player_action == 'jump_loop':
+            self.player.velocity_y -= self.GRAVITY
+            self.GRAVITY += 0.02
+            self.player.y -= self.player.velocity_y
+        elif self.player_action == 'jump_end':
+            self.player.velocity_y += self.GRAVITY
+            self.GRAVITY += 0.02
+            self.player.y += self.player.velocity_y
+
+        self.player.x += self.player.velocity_x
+
+        if self.player.y >= GROUND_LEVEL + 5:
+            self.player.y = GROUND_LEVEL
+            self.player.velocity_y = 0
+            self.player.velocity_x = 0
+            self.curr_player_frame = 0
+            self.player_frames = self.player.idle()
+            self.player_action = 'idle'
+            self.GRAVITY = BASE_GRAVITY
+
     def run(self):
         while self.is_running:
             self.CLOCK.tick(FPS)
@@ -88,42 +114,17 @@ class Game:
             else:
                 if not 'jump' in self.player_action:
                     self.curr_player_frame += 1
-
-            pygame.draw.rect(self.SCREEN, (255, 0, 0), (0, self.player.y, self.WIDTH, 1))
-            pygame.draw.circle(self.SCREEN, (0, 0, 0), (self.player.x, self.player.y), 5)
-
-            if 'jump' in self.player_action:
-
-                self.frame_counter += 1
-                if self.frame_counter >= self.FRAME_DELAY:
-                    self.curr_player_frame += 1
-                    self.frame_counter = 0
-
-                if self.player_action == 'jump_start' or self.player_action == 'jump_loop':
-                    self.player.velocity_y -= self.GRAVITY
-                    self.GRAVITY += 0.01
-                    self.player.y -= self.player.velocity_y
-                elif self.player_action == 'jump_end':
-                    self.player.velocity_y += self.GRAVITY
-                    self.GRAVITY += 0.01
-                    self.player.y += self.player.velocity_y
-
-                self.player.x += self.player.velocity_x
-
-                if self.player.y >= GROUND_LEVEL + 5:
-                    self.player.y = GROUND_LEVEL
-                    self.player.velocity_y = 0
-                    self.player.velocity_x = 0
-                    self.curr_player_frame = 0
-                    self.player_frames = self.player.idle()
-                    self.player_action = 'idle'
-                    self.GRAVITY = BASE_GRAVITY
-            
-            # the 2nd statements are checking if the player will touch the border on its next movement
-            if self.player_action == 'run_left' and not self.player.x + 25 <= 0:
+                
+            if self.player_action == 'run_left':
                 self.player.x -= self.player.MOVING_SPEED
-            elif self.player_action == 'run_right' and not self.player.x + self.player.SIZE - 25 >= self.WIDTH:
+            elif self.player_action == 'run_right':
                 self.player.x += self.player.MOVING_SPEED
+            elif 'jump' in self.player_action:
+                self.jump()
+
+            if self.player.x + self.player.SIZE >= self.WIDTH:
+                self.player_action = 'idle'
+                self.player_frames = self.player.idle()
 
             level.draw_ground()
             level.draw_platforms()
