@@ -33,9 +33,12 @@ class Player(pygame.sprite.Sprite):
     def flip_frames(self, frames):
         return [pygame.transform.flip(frame, True, False) for frame in frames]
 
-    def idle(self):
+    def idle(self, left=False):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Idle\\Player_Idle_{i}.png") for i in range(18)]
+
+        if left: 
+            player_frames = self.flip_frames(player_frames)
 
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
 

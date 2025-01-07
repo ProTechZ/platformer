@@ -5,6 +5,8 @@ from assets.level import Level1
 from assets.player import Player
 from assets.platform import Platform
 from constants import FPS, BASE_GRAVITY, GROUND_LEVEL
+import math
+
 
 pygame.init()
 
@@ -27,6 +29,7 @@ class Game:
         self.curr_level_ind = 0
 
         self.player = Player(self.SCREEN, 100)
+        self.facing_left = False
 
         self.player_action = 'idle'
         self.player_frames = self.player.idle()
@@ -43,18 +46,22 @@ class Game:
                     if self.player_action == 'idle' or self.player_action == 'run_right':
                         self.player_frames = self.player.run_left()
                         self.player_action = 'run_left'
+                        self.facing_left = True
 
                 if event.key == pygame.K_RIGHT:
                     if self.player_action == 'idle' or self.player_action == 'run_left':
                         self.player_frames = self.player.run_right()
                         self.player_action = 'run_right'
+                        self.facing_left = False
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player_action:
+                        # self.facing_left = self.player_action == 'run_left'
+
                         self.player_action = 'jump_start'
                         self.player.velocity_y = self.player.jump_force_y
                         self.player.velocity_x = self.player.jump_force_x
-                        self.player_frames = self.player.jump_start()
+                        self.player_frames = self.player.jump_start(left=self.facing_left)
                         self.curr_player_frame = 0
 
     def camera(self):
@@ -84,11 +91,11 @@ class Game:
             self.player.y += self.player.velocity_y
 
         self.GRAVITY += 0.02
-        self.player.x += self.player.velocity_x
+        self.player.x -= self.player.velocity_x if self.facing_left else -self.player.velocity_x
 
         if self.player.y >= GROUND_LEVEL + 5:
             self.player.touch_ground()
-            self.player_frames = self.player.idle()
+            self.player_frames = self.player.idle(left=self.facing_left)
             self.player_action = 'idle'
             self.GRAVITY = BASE_GRAVITY
 
@@ -108,10 +115,10 @@ class Game:
                 
                 if self.player_action == 'jump_start':
                     self.player_action = 'jump_loop'
-                    self.player_frames = self.player.jump_loop()
+                    self.player_frames = self.player.jump_loop(left=self.facing_left)
                 elif self.player_action =='jump_loop':
                     self.player_action = 'jump_end'
-                    self.player_frames = self.player.jump_end()
+                    self.player_frames = self.player.jump_end(left=self.facing_left)
                     self.GRAVITY = BASE_GRAVITY
             else:
                 # we extend the frames in the jump function
