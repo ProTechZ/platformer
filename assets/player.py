@@ -30,6 +30,9 @@ class Player(pygame.sprite.Sprite):
         self.velocity_y = 0
         self.velocity_x = 0
 
+    def flip_frames(self, frames):
+        return [pygame.transform.flip(frame, True, False) for frame in frames]
+
     def idle(self):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Idle\\Player_Idle_{i}.png") for i in range(18)]
@@ -45,24 +48,34 @@ class Player(pygame.sprite.Sprite):
     def run_left(self):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
-        player_frames = [pygame.transform.flip(frame, True, False) for frame in player_frames]
+        player_frames = self.flip_frames(player_frames)
 
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
 
-    def jump_start(self):
+    def jump_start(self, left=False):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_{i}.png") for i in range(6)]
 
+        if left: 
+            player_frames = self.flip_frames(player_frames)
+
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
 
-    def jump_loop(self):
+    def jump_loop(self, left=False):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Loop\\Player_Jump_Loop_{i}.png") for i in range(6)]
 
+        if left: 
+            player_frames = self.flip_frames(player_frames)
+
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
-    def jump_end(self):
+    
+    def jump_end(self, left=False):
         base = getenv('BASE')
         player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Falling Down\\Player_Falling_Down_{i}.png") for i in range(6)]
         
+        if left: 
+            player_frames = self.flip_frames(player_frames)
+
         return [self.rescale_player(frame, self.SIZE) for frame in player_frames]
     
