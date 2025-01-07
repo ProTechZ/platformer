@@ -43,15 +43,17 @@ class Game:
                     if self.player_action == 'idle' or self.player_action == 'run_right':
                         self.player_frames = self.player.run_left()
                         self.player_action = 'run_left'
+                        
                 if event.key == pygame.K_RIGHT:
                     if self.player_action == 'idle' or self.player_action == 'run_left':
                         self.player_frames = self.player.run_right()
                         self.player_action = 'run_right'
+
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player_action:
                         self.player_action = 'jump_start'
-                        self.player.velocity_y = self.player.jump_force * 2
-                        self.player.velocity_x = self.player.jump_force
+                        self.player.velocity_y = self.player.jump_force_y
+                        self.player.velocity_x = self.player.jump_force_x
                         self.player_frames = self.player.jump_start()
                         self.curr_player_frame = 0
 
