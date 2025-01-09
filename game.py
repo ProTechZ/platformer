@@ -77,6 +77,8 @@ class Game:
             movement = self.camera()
             level = self.levels[self.curr_level_ind]
 
+            pygame.draw.rect(self.SCREEN, (0, 0, 0), self.player.rect, 1)
+
             # resets the frame count if it reaches the end of the animation
             if self.player.curr_frame >= len(self.player.frames) - 1:
                 self.player.curr_frame = 0
@@ -96,6 +98,10 @@ class Game:
                 self.player.run_right()
             elif 'jump' in self.player.action:
                 self.player.jump(self.extend_frames)
+
+            colliding_platforms = pygame.sprite.spritecollide(self.player, level.platforms, False)
+            for platform in colliding_platforms:
+                print(f'collide at {platform.rect.x}, {platform.rect.y}')
 
             level.draw_ground()
             level.platforms.update()

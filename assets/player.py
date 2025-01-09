@@ -13,8 +13,8 @@ class Player(pygame.sprite.Sprite):
         self.SIZE = size
 
         self.MOVING_SPEED = 4
-        self.jump_force_y = 8
-        self.jump_force_x = 3
+        self.jump_force_y = 15
+        self.jump_force_x = 5
 
         self.velocity_y = 0
         self.velocity_x = 0
@@ -37,6 +37,18 @@ class Player(pygame.sprite.Sprite):
     
     @image.setter
     def image(self, value):
+        return value
+    
+    # only for the collision detection
+    @property
+    def rect(self):
+        r = self.image.get_rect()
+        r.x = self.x
+        r.y = self.y
+        return r
+    
+    @rect.setter
+    def rect(self, value):
         return value
 
     def touch_ground(self):
@@ -97,7 +109,7 @@ class Player(pygame.sprite.Sprite):
         GRAVITY += GRAVITY_INCREMENT
         self.x -= self.velocity_x if self.facing_left else -self.velocity_x
 
-        if self.y >= GROUND_LEVEL + 5:
+        if self.y >= GROUND_LEVEL:
             self.touch_ground()
             self.frames = idle(left=self.facing_left)
             self.action = 'idle'
