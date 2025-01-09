@@ -51,11 +51,6 @@ class Player(pygame.sprite.Sprite):
     def rect(self, value):
         return value
 
-    def touch_ground(self):
-        self.y = GROUND_LEVEL
-        self.velocity_y = 0
-        self.velocity_x = 0
-
     def set_run_left(self):
         self.frames = run(left=True)
         self.curr_frame = 0
@@ -112,7 +107,9 @@ class Player(pygame.sprite.Sprite):
         self.x -= self.velocity_x if self.facing_left else -self.velocity_x
 
         if self.y >= GROUND_LEVEL:
-            self.touch_ground()
+            self.y = GROUND_LEVEL
+            self.velocity_y = 0
+            self.velocity_x = 0
             self.frames = idle(left=self.facing_left)
             self.action = 'idle'
             GRAVITY = BASE_GRAVITY    

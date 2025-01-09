@@ -25,7 +25,7 @@ class Game:
         self.levels = [Level1(self.SCREEN)]
         self.curr_level_ind = 0
 
-        self.player = Player(self.SCREEN, PLAYER_SIZE)
+        self.player = Player(self.SCREEN, PLAYER_WIDTH)
 
     def event_loop(self):
         for event in pygame.event.get():
