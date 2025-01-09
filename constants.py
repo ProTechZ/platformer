@@ -11,47 +11,26 @@ GRAVITY = BASE_GRAVITY
 GROUND_LEVEL = 487
 PLAYER_SIZE = 100
 
-def idle(left=False):
+def get_frames(path, num_frames, left):
     base = getenv('BASE')
-    player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Idle\\Player_Idle_{i}.png") for i in range(18)]
+    player_frames  = [pygame.image.load(f"{base}{path}{i}.png") for i in range(num_frames)]
    
     if left: 
         player_frames = flip_frames(player_frames)
    
     return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
+
+def idle(left=False):
+    return get_frames("platformer\\resources\\player assets\\Idle\\Player_Idle_", 18, left)
 
 def run(left=False):
-    base = getenv('BASE')
-    player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
-    
-    if left: 
-        player_frames = flip_frames(player_frames)
-    
-    return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
+    return get_frames("platformer\\resources\\player assets\\Running\\Player_Running_", 12, left)
 
 def jump_start(left=False):
-    base = getenv('BASE')
-    player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_{i}.png") for i in range(6)]
-  
-    if left: 
-        player_frames = flip_frames(player_frames)
-   
-    return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
+    return get_frames("platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_", 6, left)
 
 def jump_loop(left=False):
-    base = getenv('BASE')
-    player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Jump Loop\\Player_Jump_Loop_{i}.png") for i in range(6)]
-  
-    if left: 
-        player_frames = flip_frames(player_frames)
-   
-    return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
+    return get_frames("platformer\\resources\\player assets\\Jump Loop\\Player_Jump_Loop_", 6, left)
 
 def jump_end(left=False):
-    base = getenv('BASE')
-    player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Falling Down\\Player_Falling_Down_{i}.png") for i in range(6)]
-    
-    if left: 
-        player_frames = flip_frames(player_frames)
-   
-    return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
+    return get_frames("platformer\\resources\\player assets\\Falling Down\\Player_Falling_Down_", 6, left)
