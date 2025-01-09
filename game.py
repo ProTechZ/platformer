@@ -4,7 +4,7 @@ from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
 from assets.platform import Platform
-from constants import FPS, BASE_GRAVITY, GROUND_LEVEL
+from constants import *
 
 pygame.init()
 
@@ -26,12 +26,8 @@ class Game:
         self.levels = [Level1(self.SCREEN)]
         self.curr_level_ind = 0
 
-        self.player = Player(self.SCREEN, 100)
+        self.player = Player(self.SCREEN, PLAYER_SIZE)
         self.facing_left = False
-
-        self.player_action = 'idle'
-        self.player_frames = self.player.idle()
-        self.curr_player_frame = 0
 
     def event_loop(self):
         for event in pygame.event.get():
@@ -41,24 +37,24 @@ class Game:
                 if event.key == pygame.K_q:
                     self.is_running=False 
                 if event.key == pygame.K_LEFT:
-                    if self.player_action in ['idle', 'run_right']:
-                        self.player_frames = self.player.run_left()
-                        self.player_action = 'run_left'
+                    if self.player.action in ['idle', 'run_right']:
+                        self.player.frames = run_left()
+                        self.player.action = 'run_left'
                         self.facing_left = True
 
                 if event.key == pygame.K_RIGHT:
-                    if self.player_action in ['idle', 'run_left']:
-                        self.player_frames = self.player.run_right()
-                        self.player_action = 'run_right'
+                    if self.player.action in ['idle', 'run_left']:
+                        self.player.frames = run_right()
+                        self.player.action = 'run_right'
                         self.facing_left = False
 
                 if event.key == pygame.K_SPACE:
-                    if not 'jump' in self.player_action:
-                        self.player_action = 'jump_start'
+                    if not 'jump' in self.player.action:
+                        self.player.action = 'jump_start'
                         self.player.velocity_y = self.player.jump_force_y
                         self.player.velocity_x = self.player.jump_force_x
-                        self.player_frames = self.player.jump_start(left=self.facing_left)
-                        self.curr_player_frame = 0
+                        self.player.frames = jump_start(left=self.facing_left)
+                        self.player.curr_frame = 0
 
     def touching_rborder(self):
         return self.player.x + self.player.SIZE - 25 >= self.WIDTH
@@ -78,72 +74,70 @@ class Game:
     def extend_frames(self):
         self.frame_counter += 1
         if self.frame_counter >= self.FRAME_DELAY:
-            self.curr_player_frame += 1
+            self.player.curr_frame += 1
             self.frame_counter = 0
 
     def jump(self):
         self.extend_frames()
         
         if self.touching_rborder() or self.touching_lborder():
-            self.player_action = 'jump_end'
-            self.player_frames = self.player.jump_end(left=self.facing_left)
+            self.player.action = 'jump_end'
+            self.player.frames = jump_end(left=self.facing_left)
             self.player.velocity_y = self.player.jump_force_y
             self.player.velocity_x = 0
     
-        if self.player_action == 'jump_start' or self.player_action == 'jump_loop':
+        if self.player.action == 'jump_start' or self.player.action == 'jump_loop':
             self.player.velocity_y -= self.GRAVITY
             self.player.y -= self.player.velocity_y
 
-        elif self.player_action == 'jump_end':
+        elif self.player.action == 'jump_end':
             self.player.velocity_y += self.GRAVITY
             self.player.y += self.player.velocity_y
 
-        self.GRAVITY += 0.02
+        self.GRAVITY += GRAVITY_INCREMENT
         self.player.x -= self.player.velocity_x if self.facing_left else -self.player.velocity_x
 
         if self.player.y >= GROUND_LEVEL + 5:
             self.player.touch_ground()
-            self.player_frames = self.player.idle(left=self.facing_left)
-            self.player_action = 'idle'
+            self.player.frames = idle(left=self.facing_left)
+            self.player.action = 'idle'
             self.GRAVITY = BASE_GRAVITY
 
     def run(self):
         while self.is_running:
             self.CLOCK.tick(FPS)
             self.event_loop()
+            self.SCREEN.fill((255, 255, 255))
 
             movement = self.camera()
             level = self.levels[self.curr_level_ind]
 
-            self.SCREEN.fill((255, 255, 255))
-
             # resets the frame count if it reaches the end of the animation
-            if self.curr_player_frame >= len(self.player_frames) - 1:
-                self.curr_player_frame = 0
+            if self.player.curr_frame >= len(self.player.frames) - 1:
+                self.player.curr_frame = 0
                 
-                if self.player_action == 'jump_start':
-                    self.player_action = 'jump_loop'
-                    self.player_frames = self.player.jump_loop(left=self.facing_left)
-                elif self.player_action =='jump_loop':
-                    self.player_action = 'jump_end'
-                    self.player_frames = self.player.jump_end(left=self.facing_left)
+                if self.player.action == 'jump_start':
+                    self.player.action = 'jump_loop'
+                    self.player.frames = jump_loop(left=self.facing_left)
+                elif self.player.action =='jump_loop':
+                    self.player.action = 'jump_end'
+                    self.player.frames = jump_end(left=self.facing_left)
             else:
                 # because we are already extending the frames in the jump function
-                if not 'jump' in self.player_action:
-                    self.curr_player_frame += 1
+                if not 'jump' in self.player.action:
+                    self.player.curr_frame += 1
                 
-            if self.player_action == 'run_left' and not self.touching_lborder():
+            if self.player.action == 'run_left' and not self.touching_lborder():
                 self.player.x -= self.player.MOVING_SPEED
-            elif self.player_action == 'run_right' and not self.touching_rborder():
+            elif self.player.action == 'run_right' and not self.touching_rborder():
                 self.player.x += self.player.MOVING_SPEED
-            elif 'jump' in self.player_action:
+            elif 'jump' in self.player.action:
                 self.jump()
 
+            level.draw_ground()
             level.platforms.update()
             level.platforms.draw(self.SCREEN)
-
-            level.draw_ground()
-            self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player.x, self.player.y))
+            self.SCREEN.blit(self.player.image, (self.player.x, self.player.y))
 
             pygame.display.flip()
 
