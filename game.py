@@ -45,7 +45,7 @@ class Game:
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player.action:
-                        self.player.set_jump()
+                        self.player.set_jump_start()
 
     def touching_rborder(self):
         return self.player.x + self.player.SIZE - 25 >= self.WIDTH
@@ -82,20 +82,18 @@ class Game:
                 self.player.curr_frame = 0
                 
                 if self.player.action == 'jump_start':
-                    self.player.action = 'jump_loop'
-                    self.player.frames = jump_loop(left=self.player.facing_left)
+                    self.player.set_jump_loop()
                 elif self.player.action =='jump_loop':
-                    self.player.action = 'jump_end'
-                    self.player.frames = jump_end(left=self.player.facing_left)
+                    self.player.set_jump_end()
             else:
                 # because we are already extending the frames in the jump function
                 if not 'jump' in self.player.action:
                     self.player.curr_frame += 1
                 
             if self.player.action == 'run_left' and not self.touching_lborder():
-                self.player.x -= self.player.MOVING_SPEED
+                self.player.run_left()
             elif self.player.action == 'run_right' and not self.touching_rborder():
-                self.player.x += self.player.MOVING_SPEED
+                self.player.run_right()
             elif 'jump' in self.player.action:
                 self.player.jump(self.extend_frames)
 

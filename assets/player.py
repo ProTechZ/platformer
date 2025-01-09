@@ -54,12 +54,26 @@ class Player(pygame.sprite.Sprite):
         self.action = 'run_right'
         self.facing_left = False
 
-    def set_jump(self):
+    def set_jump_start(self):
         self.action = 'jump_start'
         self.velocity_y = self.jump_force_y
         self.velocity_x = self.jump_force_x
         self.frames = jump_start(left=self.facing_left)
         self.curr_frame = 0
+
+    def set_jump_loop(self):
+        self.action = 'jump_loop'
+        self.frames = jump_loop(left=self.facing_left)
+
+    def set_jump_end(self):
+        self.action = 'jump_end'
+        self.frames = jump_end(left=self.facing_left)
+
+    def run_right(self):
+        self.x += self.MOVING_SPEED
+
+    def run_left(self):
+        self.x -= self.MOVING_SPEED
 
     def jump(self, extend_frames_func):
         global GRAVITY
