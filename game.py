@@ -33,26 +33,19 @@ class Game:
                 self.is_running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
-                    self.is_running=False 
+                    self.is_running=False
+
                 if event.key == pygame.K_LEFT:
                     if self.player.action in ['idle', 'run_right']:
-                        self.player.frames = run(left=True)
-                        self.player.action = 'run_left'
-                        self.player.facing_left = True
+                        self.player.set_run_left()
 
                 if event.key == pygame.K_RIGHT:
                     if self.player.action in ['idle', 'run_left']:
-                        self.player.frames = run()
-                        self.player.action = 'run_right'
-                        self.player.facing_left = False
+                        self.player.set_run_right()
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player.action:
-                        self.player.action = 'jump_start'
-                        self.player.velocity_y = self.player.jump_force_y
-                        self.player.velocity_x = self.player.jump_force_x
-                        self.player.frames = jump_start(left=self.player.facing_left)
-                        self.player.curr_frame = 0
+                        self.player.set_jump()
 
     def touching_rborder(self):
         return self.player.x + self.player.SIZE - 25 >= self.WIDTH
