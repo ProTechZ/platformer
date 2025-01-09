@@ -20,15 +20,13 @@ def idle(left=False):
    
     return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
 
-def run_right():
+def run(left=False):
     base = getenv('BASE')
     player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
-    return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
-
-def run_left():
-    base = getenv('BASE')
-    player_frames  = [pygame.image.load(f"{base}platformer\\resources\\player assets\\Running\\Player_Running_{i}.png") for i in range(12)]
-    player_frames = flip_frames(player_frames)
+    
+    if left: 
+        player_frames = flip_frames(player_frames)
+    
     return [rescale_img(frame, PLAYER_SIZE) for frame in player_frames]
 
 def jump_start(left=False):

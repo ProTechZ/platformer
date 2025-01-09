@@ -36,13 +36,13 @@ class Game:
                     self.is_running=False 
                 if event.key == pygame.K_LEFT:
                     if self.player.action in ['idle', 'run_right']:
-                        self.player.frames = run_left()
+                        self.player.frames = run(left=True)
                         self.player.action = 'run_left'
                         self.player.facing_left = True
 
                 if event.key == pygame.K_RIGHT:
                     if self.player.action in ['idle', 'run_left']:
-                        self.player.frames = run_right()
+                        self.player.frames = run()
                         self.player.action = 'run_right'
                         self.player.facing_left = False
 
