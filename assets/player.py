@@ -58,11 +58,13 @@ class Player(pygame.sprite.Sprite):
 
     def set_run_left(self):
         self.frames = run(left=True)
+        self.curr_frame = 0
         self.action = 'run_left'
         self.facing_left = True
 
     def set_run_right(self):
         self.frames = run()
+        self.curr_frame = 0
         self.action = 'run_right'
         self.facing_left = False
 
