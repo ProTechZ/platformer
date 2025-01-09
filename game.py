@@ -139,8 +139,10 @@ class Game:
             elif 'jump' in self.player_action:
                 self.jump()
 
+            level.platforms.update()
+            level.platforms.draw(self.SCREEN)
+
             level.draw_ground()
-            level.draw_platforms()
             self.SCREEN.blit(self.player_frames[self.curr_player_frame], (self.player.x, self.player.y))
 
             pygame.display.flip()

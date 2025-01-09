@@ -10,11 +10,13 @@ class Platform(pygame.sprite.Sprite):
         super().__init__(*groups)
 
         self.SCREEN = screen
-
         self.WIDTH = width
         self.HEIGHT = height
 
-    def draw(self, x, y):
+        self.image = self._generate()
+        self.rect = self.image.get_rect() 
+
+    def _generate(self):
         base = getenv('BASE')
         platform_img = pygame.image.load(f"{base}\\platformer\\resources\\platform.png").convert()
 
@@ -35,4 +37,5 @@ class Platform(pygame.sprite.Sprite):
 
         platform.blit(rounded_surface, (0, 0), special_flags=pygame.BLEND_RGBA_MIN)
 
-        self.SCREEN.blit(platform, (x, y))
+        return platform
+        
