@@ -3,8 +3,11 @@ from os import getenv
 from utils import flip_frames, rescale_img
 
 FPS = 60
+
 BASE_GRAVITY = 0.1
 GRAVITY_INCREMENT = 0.2
+GRAVITY = BASE_GRAVITY
+
 GROUND_LEVEL = 487
 PLAYER_SIZE = 100
 

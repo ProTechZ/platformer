@@ -13,7 +13,6 @@ class Game:
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
-        self.GRAVITY = BASE_GRAVITY
         
         self.CLOCK = pygame.time.Clock()
         self.frame_counter = 0
@@ -27,7 +26,6 @@ class Game:
         self.curr_level_ind = 0
 
         self.player = Player(self.SCREEN, PLAYER_SIZE)
-        self.facing_left = False
 
     def event_loop(self):
         for event in pygame.event.get():
@@ -40,20 +38,20 @@ class Game:
                     if self.player.action in ['idle', 'run_right']:
                         self.player.frames = run_left()
                         self.player.action = 'run_left'
-                        self.facing_left = True
+                        self.player.facing_left = True
 
                 if event.key == pygame.K_RIGHT:
                     if self.player.action in ['idle', 'run_left']:
                         self.player.frames = run_right()
                         self.player.action = 'run_right'
-                        self.facing_left = False
+                        self.player.facing_left = False
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player.action:
                         self.player.action = 'jump_start'
                         self.player.velocity_y = self.player.jump_force_y
                         self.player.velocity_x = self.player.jump_force_x
-                        self.player.frames = jump_start(left=self.facing_left)
+                        self.player.frames = jump_start(left=self.player.facing_left)
                         self.player.curr_frame = 0
 
     def touching_rborder(self):
@@ -77,32 +75,6 @@ class Game:
             self.player.curr_frame += 1
             self.frame_counter = 0
 
-    def jump(self):
-        self.extend_frames()
-        
-        if self.touching_rborder() or self.touching_lborder():
-            self.player.action = 'jump_end'
-            self.player.frames = jump_end(left=self.facing_left)
-            self.player.velocity_y = self.player.jump_force_y
-            self.player.velocity_x = 0
-    
-        if self.player.action == 'jump_start' or self.player.action == 'jump_loop':
-            self.player.velocity_y -= self.GRAVITY
-            self.player.y -= self.player.velocity_y
-
-        elif self.player.action == 'jump_end':
-            self.player.velocity_y += self.GRAVITY
-            self.player.y += self.player.velocity_y
-
-        self.GRAVITY += GRAVITY_INCREMENT
-        self.player.x -= self.player.velocity_x if self.facing_left else -self.player.velocity_x
-
-        if self.player.y >= GROUND_LEVEL + 5:
-            self.player.touch_ground()
-            self.player.frames = idle(left=self.facing_left)
-            self.player.action = 'idle'
-            self.GRAVITY = BASE_GRAVITY
-
     def run(self):
         while self.is_running:
             self.CLOCK.tick(FPS)
@@ -118,10 +90,10 @@ class Game:
                 
                 if self.player.action == 'jump_start':
                     self.player.action = 'jump_loop'
-                    self.player.frames = jump_loop(left=self.facing_left)
+                    self.player.frames = jump_loop(left=self.player.facing_left)
                 elif self.player.action =='jump_loop':
                     self.player.action = 'jump_end'
-                    self.player.frames = jump_end(left=self.facing_left)
+                    self.player.frames = jump_end(left=self.player.facing_left)
             else:
                 # because we are already extending the frames in the jump function
                 if not 'jump' in self.player.action:
@@ -132,7 +104,7 @@ class Game:
             elif self.player.action == 'run_right' and not self.touching_rborder():
                 self.player.x += self.player.MOVING_SPEED
             elif 'jump' in self.player.action:
-                self.jump()
+                self.player.jump(self.extend_frames)
 
             level.draw_ground()
             level.platforms.update()
