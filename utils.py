@@ -11,19 +11,21 @@ def rescale_img(img, size):
 
     return pygame.transform.scale(img, (size, height * scale))
 
-def crop_pygame_transparent(img):
-    # convert to PIL format
-    raw_data = pygame.image.tobytes(img, "RGBA")
-    pil_image = Image.frombytes("RGBA", img.get_size(), raw_data)
-
-    bbox = pil_image.getbbox()
-    if not bbox:
-        return img
-
-    # crop the image and convert it back to a Pygame surface
-    cropped_pil = pil_image.crop(bbox)
-    cropped_surface = pygame.image.fromstring(
-        cropped_pil.tobytes(), cropped_pil.size, "RGBA"
+def pil_to_pygame(img):
+    return pygame.image.fromstring(
+        img.tobytes(), img.size, "RGBA"
     )
 
-    return cropped_surface
+def get_bigget_bbox(img_list):
+    x1_min, y1_min, x2_max, y2_max = float('inf'), float('inf'), float('-inf'), float('-inf')
+
+    for frame in img_list:
+        bbox = frame.getbbox()
+        if bbox:
+            x1, y1, x2, y2 = bbox
+            x1_min = min(x1_min, x1)
+            y1_min = min(y1_min, y1)
+            x2_max = max(x2_max, x2)
+            y2_max = max(y2_max, y2)
+    
+    return (x1_min, y1_min, x2_max, y2_max)

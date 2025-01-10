@@ -77,8 +77,6 @@ class Game:
             movement = self.camera()
             level = self.levels[self.curr_level_ind]
 
-            pygame.draw.rect(self.SCREEN, (0, 0, 0), self.player.rect, 1)
-
             # resets the frame count if it reaches the end of the animation
             if self.player.curr_frame >= len(self.player.frames) - 1:
                 self.player.curr_frame = 0

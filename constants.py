@@ -1,6 +1,7 @@
 import pygame
 from os import getenv
-from utils import flip_frames, rescale_img, crop_pygame_transparent
+from utils import flip_frames, rescale_img, pil_to_pygame, get_bigget_bbox
+from PIL import Image
 
 FPS = 60
 
@@ -9,18 +10,21 @@ GRAVITY_INCREMENT = 0.2
 GRAVITY = BASE_GRAVITY
 
 GROUND_LEVEL = 505 
-PLAYER_WIDTH = 45
+PLAYER_WIDTH = 50
 
 def get_frames(path, num_frames, left):
     base = getenv('BASE')
-    
+
     player_frames = []
+    mbbox = get_bigget_bbox([Image.open(f"{base}{path}{i}.png") for i in range(num_frames)])
+
     for i in range(num_frames):
-        frame = pygame.image.load(f"{base}{path}{i}.png").convert_alpha()
-        frame = crop_pygame_transparent(frame)
+        frame = Image.open(f"{base}{path}{i}.png")
+        frame = frame.crop(mbbox)
+        frame = pil_to_pygame(frame)
         frame = rescale_img(frame, PLAYER_WIDTH)
         player_frames.append(frame)
-    
+
     if left:
         player_frames = flip_frames(player_frames)
     
