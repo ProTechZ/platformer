@@ -3,8 +3,8 @@ import pygame
 from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
-from constants import *
-
+from constants import PLAYER_WIDTH, GROUND_LEVEL
+from frame_functions import idle
 
 pygame.init()
 
@@ -15,6 +15,8 @@ class Game:
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
         
         self.CLOCK = pygame.time.Clock()
+        self.FPS = 30
+
         self.CAMERA = HandDetectorWindow()
 
         self.is_running = True
@@ -61,7 +63,7 @@ class Game:
 
     def run(self):
         while self.is_running:
-            self.CLOCK.tick(FPS)
+            self.CLOCK.tick(self.FPS)
             self.event_loop()
             self.SCREEN.fill((255, 255, 255))
 
@@ -76,6 +78,8 @@ class Game:
                     self.player.set_jump_loop()
                 elif self.player.action =='jump_loop':
                     self.player.set_jump_end()
+                elif self.player.action == 'jump_end' and self.player.y >= GROUND_LEVEL:
+                    self.player.set_idle()
             else:
                 self.player.curr_frame += 1
                 
@@ -84,7 +88,7 @@ class Game:
             elif self.player.action == 'run_right' and not self.touching_rborder():
                 self.player.run_right()
             elif 'jump' in self.player.action:
-                self.player.jump(self.extend_frames)
+                self.player.jump()
 
             level.draw_ground()
             level.platforms.update()

@@ -52,6 +52,10 @@ class Player(pygame.sprite.Sprite):
     def rect(self, value):
         return value
 
+    def set_idle(self):
+        self.frames = idle(left=self.facing_left)
+        self.action = 'idle'
+
     def set_run_left(self):
         self.frames = run(left=True)
         self.curr_frame = 0
@@ -109,6 +113,4 @@ class Player(pygame.sprite.Sprite):
             self.y = GROUND_LEVEL
             self.velocity_y = 0
             self.velocity_x = 0
-            self.frames = idle(left=self.facing_left)
-            self.action = 'idle'
             GRAVITY = BASE_GRAVITY    
