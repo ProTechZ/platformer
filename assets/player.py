@@ -4,6 +4,7 @@ import sys, os
 sys.path.append(os.path.abspath(os.path.join('..')))
 
 from constants import *
+from frame_functions import idle, run, jump_start, jump_loop, jump_end
 
 class Player(pygame.sprite.Sprite):
     def __init__(self, screen, size, *groups):
@@ -14,7 +15,7 @@ class Player(pygame.sprite.Sprite):
 
         self.MOVING_SPEED = 4
         self.jump_force_y = 15
-        self.jump_force_x = 5
+        self.jump_force_x = 7
 
         self.velocity_y = 0
         self.velocity_x = 0
@@ -84,10 +85,8 @@ class Player(pygame.sprite.Sprite):
     def run_left(self):
         self.x -= self.MOVING_SPEED
 
-    def jump(self, extend_frames_func):
+    def jump(self):
         global GRAVITY
-
-        extend_frames_func()
         
         # if self.touching_rborder() or self.touching_lborder():
         #     self.action = 'jump_end'

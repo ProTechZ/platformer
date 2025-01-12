@@ -3,8 +3,8 @@ import pygame
 from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
-from assets.platform import Platform
 from constants import *
+
 
 pygame.init()
 
@@ -15,9 +15,6 @@ class Game:
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
         
         self.CLOCK = pygame.time.Clock()
-        self.frame_counter = 0
-        self.FRAME_DELAY = 5
-
         self.CAMERA = HandDetectorWindow()
 
         self.is_running = True
@@ -62,12 +59,6 @@ class Game:
             self.SCREEN.blit(camera, (0, 0))
             return movement
 
-    def extend_frames(self):
-        self.frame_counter += 1
-        if self.frame_counter >= self.FRAME_DELAY:
-            self.player.curr_frame += 1
-            self.frame_counter = 0
-
     def run(self):
         while self.is_running:
             self.CLOCK.tick(FPS)
@@ -86,9 +77,7 @@ class Game:
                 elif self.player.action =='jump_loop':
                     self.player.set_jump_end()
             else:
-                # because we are already extending the frames in the jump function
-                if not 'jump' in self.player.action:
-                    self.player.curr_frame += 1
+                self.player.curr_frame += 1
                 
             if self.player.action == 'run_left' and not self.touching_lborder():
                 self.player.run_left()
@@ -96,10 +85,6 @@ class Game:
                 self.player.run_right()
             elif 'jump' in self.player.action:
                 self.player.jump(self.extend_frames)
-
-            colliding_platforms = pygame.sprite.spritecollide(self.player, level.platforms, False)
-            for platform in colliding_platforms:
-                print(f'collide at {platform.rect.x}, {platform.rect.y}')
 
             level.draw_ground()
             level.platforms.update()
