@@ -1,9 +1,9 @@
 from os import getenv
-from utils import flip_frames, rescale_img, pil_to_pygame, get_bigget_bbox
+from utils import flip_frames, rescale_img, pil_to_pygame, get_bigget_bbox, pygame_to_pil
 from PIL import Image
 from constants import PLAYER_WIDTH
 
-def get_frames(path, num_frames, left):
+def get_frames(path, num_frames):
     base = getenv('BASE')
 
     player_frames = []
@@ -16,40 +16,13 @@ def get_frames(path, num_frames, left):
         frame = rescale_img(frame, PLAYER_WIDTH)
         player_frames.append(frame)
 
-    if left:
-        player_frames = flip_frames(player_frames)
-    
-    return player_frames
+    return [player_frames, flip_frames(player_frames)]
 
-def get_idle_frames(left=False):
-    return get_frames("platformer\\resources\\player assets\\Idle\\Player_Idle_", 18, left)
-
-def get_run_frames(left=False):
-    return get_frames("platformer\\resources\\player assets\\Running\\Player_Running_", 12, left)
-
-def get_jump_start_frames(left=False):
-    return get_frames("platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_", 6, left)
-
-def get_jump_loop_frames(left=False):
-    return get_frames("platformer\\resources\\player assets\\Jump Loop\\Player_Jump_Loop_", 6, left)
-
-def get_jump_end_frames(left=False):
-    return get_frames("platformer\\resources\\player assets\\Falling Down\\Player_Falling_Down_", 6, left)
-
-idleR = get_idle_frames()
-idleL = get_idle_frames(left=True)
-
-runR = get_run_frames()
-runL = get_run_frames(left=True)
-
-jump_startR = get_jump_start_frames()
-jump_startL = get_jump_start_frames(left=True)
-
-jump_loopR = get_jump_loop_frames()
-jump_loopL = get_jump_loop_frames(left=True)
-
-jump_endR = get_jump_end_frames()
-jump_endL = get_jump_end_frames(left=True)
+idleR, idleL = get_frames("platformer\\resources\\player assets\\Idle\\Player_Idle_", 18)
+runR, runL = get_frames("platformer\\resources\\player assets\\Running\\Player_Running_", 12)
+jump_startR, jump_startL = get_frames("platformer\\resources\\player assets\\Jump Start\\Player_Jump_Start_", 6)
+jump_loopR, jump_loopL = get_frames("platformer\\resources\\player assets\\Jump Loop\\Player_Jump_Loop_", 6)
+jump_endR, jump_endL = get_frames("platformer\\resources\\player assets\\Falling Down\\Player_Falling_Down_", 6)
 
 def idle(left=False):
     return idleL if left else idleR
