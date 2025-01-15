@@ -21,10 +21,9 @@ class Game:
 
         self.is_running = True
 
-        self.levels = [Level1(self.SCREEN)]
-        self.curr_level_ind = 0
-
         self.player = Player(self.SCREEN, PLAYER_WIDTH)
+        self.levels = [Level1(self.SCREEN, self.player)]
+        self.curr_level_ind = 0
 
     def event_loop(self):
         for event in pygame.event.get():
@@ -41,16 +40,19 @@ class Game:
                 if event.key == pygame.K_RIGHT:
                     if self.player.action in ['idle', 'run_left']:
                         self.player.set_run_right()
+                
+                if event.key == pygame.K_DOWN:
+                    self.player.set_idle()
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player.action:
                         self.player.set_jump_start()
 
     def touching_rborder(self):
-        return self.player.x + self.player.SIZE - 25 >= self.WIDTH
+        return self.player.x + self.player.SIZE >= self.WIDTH
     
     def touching_lborder(self):
-        return self.player.x + 25 <= 0
+        return self.player.x <= 0
 
     def camera(self):
         camera, movement = self.CAMERA.start()
@@ -70,6 +72,8 @@ class Game:
             movement = self.camera()
             level = self.levels[self.curr_level_ind]
 
+            pygame.draw.rect(self.SCREEN, (0, 0, 0), (self.player.x, self.player.y, self.player.SIZE, self.player.image.get_height()), 1)
+
             # resets the frame count if it reaches the end of the animation
             if self.player.curr_frame >= len(self.player.frames) - 1:
                 self.player.curr_frame = 0
@@ -82,6 +86,9 @@ class Game:
                     self.player.set_idle()
             else:
                 self.player.curr_frame += 1
+
+            for platform in level.platforms:
+                level.detect_collision(self.player, platform)
                 
             if self.player.action == 'run_left' and not self.touching_lborder():
                 self.player.run_left()

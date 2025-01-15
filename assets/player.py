@@ -14,7 +14,6 @@ class Player(pygame.sprite.Sprite):
         self.SIZE = size
 
         self.MOVING_SPEED = 4
-
         self.velocity_x = 0
         self.velocity_y = 0
 
@@ -78,7 +77,6 @@ class Player(pygame.sprite.Sprite):
         self.frames = jump_loop(left=self.facing_left)
 
     def set_jump_end(self):
-        global GRAVITY
         self.action = 'jump_end'
         self.frames = jump_end(left=self.facing_left)
 

@@ -1,5 +1,4 @@
 import pygame
-from PIL import Image
 
 def flip_frames(frames):
     return [pygame.transform.flip(frame, True, False) for frame in frames]
