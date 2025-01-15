@@ -14,11 +14,9 @@ class Player(pygame.sprite.Sprite):
         self.SIZE = size
 
         self.MOVING_SPEED = 4
-        self.jump_force_y = 15
-        self.jump_force_x = 7
 
-        self.velocity_y = 0
         self.velocity_x = 0
+        self.velocity_y = 0
 
         self.facing_left = False
 
@@ -70,16 +68,17 @@ class Player(pygame.sprite.Sprite):
 
     def set_jump_start(self):
         self.action = 'jump_start'
-        self.velocity_y = self.jump_force_y
-        self.velocity_x = self.jump_force_x
         self.frames = jump_start(left=self.facing_left)
         self.curr_frame = 0
+        self.velocity_y = 8
+        self.velocity_x = 8
 
     def set_jump_loop(self):
         self.action = 'jump_loop'
         self.frames = jump_loop(left=self.facing_left)
 
     def set_jump_end(self):
+        global GRAVITY
         self.action = 'jump_end'
         self.frames = jump_end(left=self.facing_left)
 
@@ -89,28 +88,26 @@ class Player(pygame.sprite.Sprite):
     def run_left(self):
         self.x -= self.MOVING_SPEED
 
-    def jump(self):
-        global GRAVITY
-        
+    def jump(self):     
         # if self.touching_rborder() or self.touching_lborder():
         #     self.action = 'jump_end'
         #     self.frames = jump_end(left=self.facing_left)
         #     self.velocity_y = self.jump_force_y
         #     self.velocity_x = 0
-    
+        
         if self.action == 'jump_start' or self.action == 'jump_loop':
-            self.velocity_y -= GRAVITY
-            self.y -= self.velocity_y
+            self.y -= (self.velocity_y **2)*0.5
+
+            if self.velocity_y > 0:
+                self.velocity_y -= .75
 
         elif self.action == 'jump_end':
-            self.velocity_y += GRAVITY
-            self.y += self.velocity_y
+            self.y += (self.velocity_y ** 2) *0.5
+            self.velocity_y += 1
 
-        GRAVITY += GRAVITY_INCREMENT
         self.x -= self.velocity_x if self.facing_left else -self.velocity_x
 
         if self.y >= GROUND_LEVEL:
             self.y = GROUND_LEVEL
-            self.velocity_y = 0
+            self.velocity_y = 10
             self.velocity_x = 0
-            GRAVITY = BASE_GRAVITY    

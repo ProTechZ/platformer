@@ -1,5 +1,5 @@
 from os import getenv
-from utils import flip_frames, rescale_img, pil_to_pygame, get_bigget_bbox, pygame_to_pil
+from utils import flip_frames, rescale_img, pil_to_pygame, get_bigget_bbox
 from PIL import Image
 from constants import PLAYER_WIDTH
 
