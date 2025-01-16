@@ -77,6 +77,7 @@ class Player(pygame.sprite.Sprite):
         self.frames = jump_loop(left=self.facing_left)
 
     def set_jump_end(self):
+        self.curr_frame = 0
         self.action = 'jump_end'
         self.frames = jump_end(left=self.facing_left)
 

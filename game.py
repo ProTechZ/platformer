@@ -88,7 +88,8 @@ class Game:
                 self.player.curr_frame += 1
 
             for platform in level.platforms:
-                level.collide(platform)
+                level.detect_collision(self.player, platform)
+                level.detect_falling_off_platform(platform)
                 
             if self.player.action == 'run_left' and not self.touching_lborder():
                 self.player.run_left()
