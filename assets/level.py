@@ -16,6 +16,9 @@ class Level:
         self.SCREEN_WIDTH = self.SCREEN.get_width()
         self.SCREEN_HEIGHT = self.SCREEN.get_height()
 
+        self.collision = ''
+        self.prev_collision = ''
+
     def gen_platforms(self, platforms_details):
         for x, y, width, height in  platforms_details:
             platform = Platform(self.SCREEN, width, height)
@@ -31,25 +34,39 @@ class Level:
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
 
     def detect_collision(self, player: Player, platform: Platform):
-        # Player bounding box
         player_b = player.y + player.image.get_height()
         player_t = player.y
         player_l = player.x
         player_r = player.x + player.SIZE
 
-        # Platform bounding box
         platform_b = platform.rect.y + platform.HEIGHT
         platform_t = platform.rect.y
         platform_l = platform.rect.x
         platform_r = platform.rect.x + platform.WIDTH
 
-        # collision left
-        if player_r >= platform_l and player_b > platform_t and player_t < platform_b:
-            if player.y < GROUND_LEVEL: 
-                player.set_jump_end()
-            elif not player.action == 'run_left':
+        if pygame.rect.Rect(player.x, player.y, player.SIZE, player.image.get_height()).colliderect(platform.rect):
+            # Top collision
+            if player_b > platform_t and player.velocity_y > 0 and not player.action == 'jump_start':
+                player.y = platform_t - player.image.get_height()
+                player.velocity_y = 0
                 player.set_idle()
+                print('top')
+                
+            # Left collision
+            elif player_r > platform_l and player_l < platform.rect.left:
+                player.x = platform_l - player.SIZE
 
+            # Right collision
+            elif player_l < platform_r and player_r > platform_r:
+                player.x = platform_r
+
+            # Bottom collision
+            elif player_t < platform_b and player_b > platform_b:
+                player.y = platform_b
+                player.velocity_y = 1
+
+    def collide(self, platform: Platform):
+        self.detect_collision(self.PLAYER, platform)
 
 class Level1(Level):
     def __init__(self, screen, player):
