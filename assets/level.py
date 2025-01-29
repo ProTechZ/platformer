@@ -1,8 +1,11 @@
 import pygame
 from dotenv import load_dotenv
-from os import getenv
+from os import getenv, path
 from assets.platform import Platform
 from assets.player import Player
+
+import sys
+sys.path.append(path.abspath(path.join('..')))
 from constants import GROUND_LEVEL
 
 load_dotenv()
@@ -17,6 +20,7 @@ class Level:
         self.SCREEN_HEIGHT = self.SCREEN.get_height()
 
         self.curr_platform = None
+        self.player_falling = False
 
     def gen_platforms(self, platforms_details):
         for x, y, width, height in  platforms_details:
@@ -32,12 +36,6 @@ class Level:
         for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
 
-    def detect_falling_off_platform(self, platform):
-        if self.curr_platform == platform:
-            if 'run' in self.PLAYER.action and (self.PLAYER.x < platform.rect.x - 10 or self.PLAYER.x + self.PLAYER.SIZE >= platform.rect.x + platform.WIDTH + 10):
-                self.PLAYER.set_jump_end()
-                self.curr_platform = None
-
     def detect_collision(self, player: Player, platform: Platform):
         player_b = player.y + player.image.get_height()
         player_t = player.y
@@ -51,23 +49,27 @@ class Level:
 
         if pygame.rect.Rect(player.x, player.y, player.SIZE, player.image.get_height()).colliderect(platform.rect):
             self.curr_platform = platform
-            
+
+            # Falling down
+            if player_b >= platform_t and player_t < platform_t:
+                player_halfway_x = player_r -20
+                if player.action == 'run_left' and player_halfway_x - player.MOVING_SPEED < platform_l:
+                    player.set_jump_end()
+
             # Top collision
-            if player_b > platform_t and player.velocity_y > 0 and player.action == 'jump_end':
+            if player_b > platform_t and player_t < platform_t and player.velocity_y > 0 and player.action == 'jump_end':
                 player.y = platform_t - player.image.get_height()
                 player.velocity_y = 0
                 player.set_idle()
-                self.collision = 'top'
-                return True
-                
+                self.player_falling = False
+
             # Left collision
-            elif player_r > platform_l and player_l < platform.rect.left:
-                player.x = platform_l - player.SIZE
-                self.collision = 'left'
+            elif player_r >= platform_l and player_l < platform_l and player.y == GROUND_LEVEL and player.action == 'run_right':
+                player.move_while_running = False
 
             # Right collision
-            elif player_l < platform_r and player_r > platform_r:
-                player.x = platform_r
+            elif player_l <= platform_r and player_r > platform_r and player.y == GROUND_LEVEL and player.action == 'run_left':
+                player.move_while_running = False
 
             # Bottom collision
             # elif player_t < platform_b and player_b > platform_b and player.action or ['jump_start', 'jump_end']:
@@ -86,4 +88,3 @@ class Level1(Level):
         ]
 
         self.gen_platforms(platforms_details)
-

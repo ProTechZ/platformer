@@ -4,7 +4,6 @@ from hand_detection import HandDetectorWindow
 from assets.level import Level1
 from assets.player import Player
 from constants import PLAYER_WIDTH, GROUND_LEVEL
-from frame_functions import idle
 
 pygame.init()
 
@@ -13,7 +12,7 @@ class Game:
         self.WIDTH = int(width)
         self.HEIGHT = int(height)
         self.SCREEN = pygame.display.set_mode([self.WIDTH, self.HEIGHT])
-        
+
         self.CLOCK = pygame.time.Clock()
         self.FPS = 30
 
@@ -40,26 +39,24 @@ class Game:
                 if event.key == pygame.K_RIGHT:
                     if self.player.action in ['idle', 'run_left']:
                         self.player.set_run_right()
-                
+
                 if event.key == pygame.K_DOWN:
                     self.player.set_idle()
 
                 if event.key == pygame.K_SPACE:
                     if not 'jump' in self.player.action:
                         self.player.set_jump_start()
-
-    def touching_rborder(self):
-        return self.player.x + self.player.SIZE >= self.WIDTH
     
-    def touching_lborder(self):
-        return self.player.x <= 0
+    def border_collision(self):
+        if self.player.x + self.player.SIZE >= self.WIDTH or self.player.x <= 0:
+            self.player.move_while_running = False
 
     def camera(self):
         camera, movement = self.CAMERA.start()
-                                                                                                                                                                                                                                                                                        
+                                                        
         if camera is None:
             self.is_running = False
-        else:       
+        else:
             self.SCREEN.blit(camera, (0, 0))
             return movement
 
@@ -77,7 +74,7 @@ class Game:
             # resets the frame count if it reaches the end of the animation
             if self.player.curr_frame >= len(self.player.frames) - 1:
                 self.player.curr_frame = 0
-                
+
                 if self.player.action == 'jump_start':
                     self.player.set_jump_loop()
                 elif self.player.action =='jump_loop':
@@ -89,11 +86,10 @@ class Game:
 
             for platform in level.platforms:
                 level.detect_collision(self.player, platform)
-                level.detect_falling_off_platform(platform)
-                
-            if self.player.action == 'run_left' and not self.touching_lborder():
+
+            if self.player.action == 'run_left':
                 self.player.run_left()
-            elif self.player.action == 'run_right' and not self.touching_rborder():
+            elif self.player.action == 'run_right':
                 self.player.run_right()
             elif 'jump' in self.player.action:
                 self.player.jump()
@@ -101,7 +97,9 @@ class Game:
             level.draw_ground()
             level.platforms.update()
             level.platforms.draw(self.SCREEN)
+            
             self.SCREEN.blit(self.player.image, (self.player.x, self.player.y))
+            self.border_collision()
 
             pygame.display.flip()
 

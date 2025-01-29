@@ -22,6 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.frames = idle()
         self.curr_frame = 0
         self.action = 'idle'
+        self.move_while_running = True
 
         self.image = self.frames[self.curr_frame]
         self.rect = self.image.get_rect()
@@ -57,12 +58,14 @@ class Player(pygame.sprite.Sprite):
         self.frames = run(left=True)
         self.curr_frame = 0
         self.action = 'run_left'
+        self.move_while_running = True
         self.facing_left = True
 
     def set_run_right(self):
         self.frames = run()
         self.curr_frame = 0
         self.action = 'run_right'
+        self.move_while_running = True
         self.facing_left = False
 
     def set_jump_start(self):
@@ -82,10 +85,12 @@ class Player(pygame.sprite.Sprite):
         self.frames = jump_end(left=self.facing_left)
 
     def run_right(self):
-        self.x += self.MOVING_SPEED
+        if self.move_while_running:
+            self.x += self.MOVING_SPEED
 
     def run_left(self):
-        self.x -= self.MOVING_SPEED
+        if self.move_while_running:
+            self.x -= self.MOVING_SPEED
 
     def jump(self):     
         # if self.touching_rborder() or self.touching_lborder():
