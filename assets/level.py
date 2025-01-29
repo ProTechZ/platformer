@@ -52,11 +52,17 @@ class Level:
 
             # Falling down
             if player_b >= platform_t and player_t < platform_t:
-                player_halfway_x = player_r -20
-                if player.action == 'run_left' and player_halfway_x - player.MOVING_SPEED < platform_l:
+                tipping_point = player_r - 20
+
+                # Falling from left
+                if player.action == 'run_left' and tipping_point - player.MOVING_SPEED < platform_l:
                     player.set_jump_end()
 
-            # Top collision
+                # Falling from right
+                elif player.action == 'run_right' and tipping_point - player.MOVING_SPEED > platform_r:
+                    player.set_jump_end()
+
+            # Jumping on top of platform collision
             if player_b > platform_t and player_t < platform_t and player.velocity_y > 0 and player.action == 'jump_end':
                 player.y = platform_t - player.image.get_height()
                 player.velocity_y = 0
@@ -72,10 +78,10 @@ class Level:
                 player.move_while_running = False
 
             # Bottom collision
-            # elif player_t < platform_b and player_b > platform_b and player.action or ['jump_start', 'jump_end']:
-            #     print('hi')
-            #     player.y = platform_b
-            #     player.velocity_y = 1
+            elif player_t <= platform_b and player_b > platform_b and 'jump' in player.action:
+                player.y = platform_b
+                player.set_jump_end()
+                player.velocity_y = 1
 
 
 class Level1(Level):
