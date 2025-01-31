@@ -27,7 +27,7 @@ class Player(pygame.sprite.Sprite):
         self.image = self.frames[self.curr_frame]
         self.rect = self.image.get_rect()
 
-        self.x = 500
+        self.x = 20
         self.y = GROUND_LEVEL
 
     @property

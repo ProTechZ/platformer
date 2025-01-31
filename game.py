@@ -66,10 +66,7 @@ class Game:
             self.event_loop()
             self.SCREEN.fill((255, 255, 255))
 
-            movement = self.camera()
             level = self.levels[self.curr_level_ind]
-
-            pygame.draw.rect(self.SCREEN, (0, 0, 0), (self.player.x, self.player.y, self.player.SIZE, self.player.image.get_height()), 1)
 
             # resets the frame count if it reaches the end of the animation
             if self.player.curr_frame >= len(self.player.frames) - 1:
@@ -94,9 +91,7 @@ class Game:
             elif 'jump' in self.player.action:
                 self.player.jump()
 
-            level.draw_ground()
-            level.platforms.update()
-            level.platforms.draw(self.SCREEN)
+            level.draw_level()
             
             self.SCREEN.blit(self.player.image, (self.player.x, self.player.y))
             self.border_collision()
