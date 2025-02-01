@@ -15,6 +15,7 @@ class HandDetectorWindow:
         self.movement = 0
         self.last_pos_x = None
         self.last_pos_y = None
+        self.last_direction = None
 
     def stop(self):
         self.cap.release()
@@ -26,21 +27,27 @@ class HandDetectorWindow:
     def detect_hand_movement(self, hand_landmarks):    
         landmarks = hand_landmarks.landmark
         curr_pos_x = round(sum([landmark.x for landmark in landmarks]) / len(landmarks), 3)
-        curr_pos_y = round(sum([landmark.y for landmark in landmarks]) / len(landmarks), 4)
+        curr_pos_y = round(sum([landmark.y for landmark in landmarks]) / len(landmarks), 3)
 
+        
         if self.last_pos_x is not None:
 
             # moving left means the pos value decreases so the cur_pos would be smaller
             if (self.last_pos_x - curr_pos_x) >= 0.01:
                 self.movement = 1
+                self.last_direction = 'left'
 
             # moving right means the pos value increases so the cur_pos would be greater
-            elif (curr_pos_x - self.last_pos_x) >= 0.01:
+            if (curr_pos_x - self.last_pos_x) >= 0.01:
                 self.movement = 2
+                self.last_direction = 'right'
 
         if self.last_pos_y is not None:
-            if (self.last_pos_y - curr_pos_y) >= 0.005:
+            if (self.last_pos_y - curr_pos_y) >= 0.05 and not self.last_direction == 'up':
                 self.movement = 3
+                self.last_direction = 'up'
+        else:
+            self.movement = 0
 
         self.last_pos_x = curr_pos_x
         self.last_pos_y = curr_pos_y

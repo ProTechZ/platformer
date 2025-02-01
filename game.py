@@ -48,8 +48,7 @@ class Game:
 
     def control_player(self):
         self.camera()
-        print(self.movement)
-
+        
         if int(self.movement) == 1 and self.player.action in ['idle', 'run_right']:
             self.player.set_run_left()
 
@@ -58,6 +57,7 @@ class Game:
 
         elif int(self.movement) == 3 and not 'jump' in self.player.action:
             self.player.set_jump_start()
+            self.movement = 0
 
     def run(self):
         while self.is_running:

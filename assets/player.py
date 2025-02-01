@@ -23,6 +23,7 @@ class Player(pygame.sprite.Sprite):
         self.curr_frame = 0
         self.action = 'idle'
         self.move_while_running = True
+        self.running = False
 
         self.image = self.frames[self.curr_frame]
         self.rect = self.image.get_rect()
@@ -58,12 +59,14 @@ class Player(pygame.sprite.Sprite):
     def set_idle(self):
         self.frames = idle(left=self.facing_left)
         self.action = 'idle'
+        self.running = False
 
     def set_run_left(self):
         self.frames = run(left=True)
         self.curr_frame = 0
         self.action = 'run_left'
         self.move_while_running = True
+        self.running = True
         self.facing_left = True
 
     def set_run_right(self):
@@ -71,6 +74,7 @@ class Player(pygame.sprite.Sprite):
         self.curr_frame = 0
         self.action = 'run_right'
         self.move_while_running = True
+        self.running = True
         self.facing_left = False
 
     def set_jump_start(self):
@@ -88,6 +92,7 @@ class Player(pygame.sprite.Sprite):
         self.curr_frame = 0
         self.action = 'jump_end'
         self.frames = jump_end(left=self.facing_left)
+        self.running = False
 
     def run_right(self):
         if self.move_while_running:
@@ -98,11 +103,10 @@ class Player(pygame.sprite.Sprite):
             self.x -= self.MOVING_SPEED
 
     def jump(self):     
-        # if self.touching_rborder() or self.touching_lborder():
-        #     self.action = 'jump_end'
-        #     self.frames = jump_end(left=self.facing_left)
-        #     self.velocity_y = self.jump_force_y
-        #     self.velocity_x = 0
+        if self.x + self.SIZE >= self.SCREEN.get_width() or self.x <= 0:
+            self.action = 'jump_end'
+            self.frames = jump_end(left=self.facing_left)
+            self.velocity_x = 0
         
         if self.action == 'jump_start' or self.action == 'jump_loop':
             self.y -= (self.velocity_y **2)*0.5
@@ -114,7 +118,8 @@ class Player(pygame.sprite.Sprite):
             self.y += (self.velocity_y ** 2) *0.5
             self.velocity_y += 1
 
-        self.x -= self.velocity_x if self.facing_left else -self.velocity_x
+        if self.running:
+            self.x -= self.velocity_x if self.facing_left else -self.velocity_x
 
         if self.y >= GROUND_LEVEL:
             self.y = GROUND_LEVEL
