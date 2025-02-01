@@ -17,6 +17,7 @@ class Game:
         self.FPS = 30
 
         self.CAMERA = HandDetectorWindow()
+        self.movement = 0
 
         self.is_running = True
 
@@ -31,40 +32,39 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.is_running=False
-
-                if event.key == pygame.K_LEFT:
-                    if self.player.action in ['idle', 'run_right']:
-                        self.player.set_run_left()
-
-                if event.key == pygame.K_RIGHT:
-                    if self.player.action in ['idle', 'run_left']:
-                        self.player.set_run_right()
-
-                if event.key == pygame.K_DOWN:
-                    self.player.set_idle()
-
-                if event.key == pygame.K_SPACE:
-                    if not 'jump' in self.player.action:
-                        self.player.set_jump_start()
     
     def border_collision(self):
         if self.player.x + self.player.SIZE >= self.WIDTH or self.player.x <= 0:
             self.player.move_while_running = False
 
     def camera(self):
-        camera, movement = self.CAMERA.start()
+        camera, movement = self.CAMERA.run()
                                                         
         if camera is None:
             self.is_running = False
         else:
             self.SCREEN.blit(camera, (0, 0))
-            return movement
+            self.movement = movement
+
+    def control_player(self):
+        self.camera()
+        print(self.movement)
+
+        if int(self.movement) == 1 and self.player.action in ['idle', 'run_right']:
+            self.player.set_run_left()
+
+        elif int(self.movement) == 2 and self.player.action in ['idle', 'run_left']:
+            self.player.set_run_right()
+
+        elif int(self.movement) == 3 and not 'jump' in self.player.action:
+            self.player.set_jump_start()
 
     def run(self):
         while self.is_running:
             self.CLOCK.tick(self.FPS)
-            self.event_loop()
             self.SCREEN.fill((255, 255, 255))
+            self.control_player()
+            self.event_loop()
 
             level = self.levels[self.curr_level_ind]
 

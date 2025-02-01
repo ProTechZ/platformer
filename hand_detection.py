@@ -2,6 +2,7 @@ import cv2
 import numpy
 import pygame
 import mediapipe as mp
+import math
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -12,30 +13,37 @@ class HandDetectorWindow:
         self.cap = cv2.VideoCapture(0)
 
         self.movement = 0
-        self.last_pos = None
+        self.last_pos_x = None
+        self.last_pos_y = None
 
     def stop(self):
         self.cap.release()
         cv2.destroyAllWindows()
 
+    def calculate_distance(self, point1, point2):
+        return math.sqrt((point1.x - point2.x)**2 + (point1.y - point2.y)**2)
+
     def detect_hand_movement(self, hand_landmarks):    
         landmarks = hand_landmarks.landmark
-        curr_pos = round(sum([landmark.x for landmark in landmarks]) / len(landmarks), 3)
+        curr_pos_x = round(sum([landmark.x for landmark in landmarks]) / len(landmarks), 3)
+        curr_pos_y = round(sum([landmark.y for landmark in landmarks]) / len(landmarks), 4)
 
-        if self.last_pos is not None:
+        if self.last_pos_x is not None:
 
             # moving left means the pos value decreases so the cur_pos would be smaller
-            if (self.last_pos - curr_pos) >= 0.01:
+            if (self.last_pos_x - curr_pos_x) >= 0.01:
                 self.movement = 1
 
             # moving right means the pos value increases so the cur_pos would be greater
-            elif (curr_pos - self.last_pos) >= 0.01:
+            elif (curr_pos_x - self.last_pos_x) >= 0.01:
                 self.movement = 2
 
-            else:
-                self.movement = 0
+        if self.last_pos_y is not None:
+            if (self.last_pos_y - curr_pos_y) >= 0.005:
+                self.movement = 3
 
-        self.last_pos = curr_pos
+        self.last_pos_x = curr_pos_x
+        self.last_pos_y = curr_pos_y
 
     def rescale_frame(self, frame, scale_factor):
         width = int(self.cap.get(cv2.CAP_PROP_FRAME_WIDTH) * scale_factor)
@@ -51,7 +59,7 @@ class HandDetectorWindow:
 
         return frame
 
-    def start(self):
+    def run(self):
         success, frame = self.cap.read()
 
         if not success:
