@@ -2,7 +2,6 @@ import pygame
 from dotenv import load_dotenv
 from os import getenv, path
 from assets.platform import Platform
-from assets.player import Player
 from assets.endpoint import EndPoint
 
 import sys
@@ -15,25 +14,25 @@ class Level:
     def __init__(self, screen, player):
         self.platforms = pygame.sprite.Group()
         self.PLAYER = player
+        self.ENDPOINT = EndPoint(60)
 
         self.SCREEN = screen
         self.SCREEN_WIDTH = self.SCREEN.get_width()
         self.SCREEN_HEIGHT = self.SCREEN.get_height()
 
     def draw_level(self):
-        self._draw_endpoint()
         self._draw_ground()
         self.platforms.update()
         self.platforms.draw(self.SCREEN)
+        self._draw_endpoint()
 
     def _draw_endpoint(self):
-        endpoint = EndPoint(50)
         last_platform = self.platforms.sprites()[-1]
 
-        x = (last_platform.rect.x + last_platform.WIDTH / 2) - endpoint.image.get_width() / 2
-        y = last_platform.rect.y - endpoint.image.get_height()
+        self.ENDPOINT.rect.x = (last_platform.rect.x + last_platform.WIDTH / 2) - self.ENDPOINT.image.get_width() / 2
+        self.ENDPOINT.rect.y = last_platform.rect.y - self.ENDPOINT.image.get_height()
 
-        self.SCREEN.blit(endpoint.image, (x, y))
+        self.SCREEN.blit(self.ENDPOINT.image, (self.ENDPOINT.rect.x, self.ENDPOINT.rect.y))
 
     def gen_platforms(self, platforms_details):
         for x, y, width, height in  platforms_details:
@@ -49,59 +48,68 @@ class Level:
         for x in range(0, self.SCREEN_WIDTH, ground.get_width()):
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
 
-    def detect_collision(self, player: Player, platform: Platform):
-        player_b = player.y + player.image.get_height()
-        player_t = player.y
-        player_l = player.x
-        player_r = player.x + player.SIZE
+    def reached_endpoint(self):
+        last_platform = self.platforms.sprites()[-1]
+        if self.PLAYER.rect.colliderect(last_platform.rect):
+            player_middle_x = self.PLAYER.x + self.PLAYER.SIZE / 2
+            player_middle_y = self.PLAYER.y + self.PLAYER.image.get_height() / 2
+
+            if self.ENDPOINT.rect.collidepoint(player_middle_x, player_middle_y):
+                self.ENDPOINT.open()
+                return True
+
+    def detect_collision(self, platform: Platform):
+        player_b = self.PLAYER.y + self.PLAYER.image.get_height()
+        player_t = self.PLAYER.y
+        player_l = self.PLAYER.x
+        player_r = self.PLAYER.x + self.PLAYER.SIZE
 
         platform_b = platform.rect.y + platform.HEIGHT
         platform_t = platform.rect.y
         platform_l = platform.rect.x
         platform_r = platform.rect.x + platform.WIDTH
 
-        if pygame.rect.Rect(player.x, player.y, player.SIZE, player.image.get_height()).colliderect(platform.rect):
+        if self.PLAYER.rect.colliderect(platform.rect):
             # Falling down
             if player_b >= platform_t and player_t < platform_t:
                 tipping_point = player_r - 20
 
                 # Falling from left
-                if player.action == 'run_left' and tipping_point - player.MOVING_SPEED < platform_l:
-                    player.set_jump_end()
+                if self.PLAYER.action == 'run_left' and tipping_point - self.PLAYER.MOVING_SPEED < platform_l:
+                    self.PLAYER.set_jump_end()
 
                 # Falling from right
-                elif player.action == 'run_right' and tipping_point - player.MOVING_SPEED > platform_r:
-                    player.set_jump_end()
+                elif self.PLAYER.action == 'run_right' and tipping_point - self.PLAYER.MOVING_SPEED > platform_r:
+                    self.PLAYER.set_jump_end()
 
             # Jumping on top of platform collision
-            if player_b > platform_t and player_t < platform_t and player.velocity_y > 0 and player.action == 'jump_end':
-                player.y = platform_t - player.image.get_height()
-                player.velocity_y = 0
-                player.set_idle()
+            if player_b > platform_t and player_t < platform_t and self.PLAYER.velocity_y > 0 and self.PLAYER.action == 'jump_end':
+                self.PLAYER.y = platform_t - self.PLAYER.image.get_height()
+                self.PLAYER.velocity_y = 0
+                self.PLAYER.set_idle()
                 
             # Left collision
-            elif player_r >= platform_l and player_l < platform_l and player.y == GROUND_LEVEL :
-                if player.move_while_running:
-                    player.x = platform_l - player.SIZE
-                player.move_while_running = False
+            elif player_r >= platform_l and player_l < platform_l and self.PLAYER.y == GROUND_LEVEL :
+                if self.PLAYER.move_while_running:
+                    self.PLAYER.x = platform_l - self.PLAYER.SIZE
+                self.PLAYER.move_while_running = False
                 
             # Right collision
-            elif player_l <= platform_r and player_r > platform_r and player.y == GROUND_LEVEL:
-                if player.move_while_running:
-                    player.x = platform_r
-                player.move_while_running = False
-                print('4')
+            elif player_l <= platform_r and player_r > platform_r and self.PLAYER.y == GROUND_LEVEL:
+                if self.PLAYER.move_while_running:
+                    self.PLAYER.x = platform_r
+                self.PLAYER.move_while_running = False
 
             # Bottom collision
-            elif player_t <= platform_b and player_b > platform_b and 'jump' in player.action:
-                player.y = platform_b
-                player.set_jump_end()
-                player.velocity_y = 1
+            elif player_t <= platform_b and player_b > platform_b and 'jump' in self.PLAYER.action:
+                self.PLAYER.y = platform_b
+                self.PLAYER.set_jump_end()
+                self.PLAYER.velocity_y = 1
                 
 
 class Level1(Level):
-    def __init__(self, screen, player):
-        super().__init__(screen, player)
+    def __init__(self, screen):
+        super().__init__(screen)
         platforms_details = [
             (220, 475, 200, 50),
             (450, 400, 200, 50),

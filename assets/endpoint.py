@@ -14,12 +14,19 @@ class EndPoint(pygame.sprite.Sprite):
         super().__init__(*groups)
         self.SIZE = SIZE
 
-        self.image = self._generate()
+        self.close()
         self.rect = self.image.get_rect() 
 
-    def _generate(self):
+    def close(self):
         base = getenv('BASE')
-        endpoint_img = pygame.image.load(f"{base}\\platformer\\resources\\endpoint.png").convert()
+        closed = pygame.image.load(f"{base}\\platformer\\resources\\closed.png").convert()
 
-        return rescale_img(endpoint_img, self.SIZE)
+        self.image = rescale_img(closed, self.SIZE)
+    
+    def open(self):
+        base = getenv('BASE')
+        open = pygame.image.load(f"{base}\\platformer\\resources\\open.png").convert()
+
+        self.image = rescale_img(open, self.SIZE)
+
         

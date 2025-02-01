@@ -50,6 +50,11 @@ class Player(pygame.sprite.Sprite):
     def rect(self, value):
         return value
 
+    def reset(self):
+        self.set_idle()
+        self.x = 20
+        self.y = GROUND_LEVEL
+
     def set_idle(self):
         self.frames = idle(left=self.facing_left)
         self.action = 'idle'

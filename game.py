@@ -21,7 +21,7 @@ class Game:
         self.is_running = True
 
         self.player = Player(self.SCREEN, PLAYER_WIDTH)
-        self.levels = [Level1(self.SCREEN, self.player)]
+        self.levels = [Level1(self.SCREEN), Level1(self.SCREEN)]
         self.curr_level_ind = 0
 
     def event_loop(self):
@@ -82,8 +82,8 @@ class Game:
                 self.player.curr_frame += 1
 
             for platform in level.platforms:
-                level.detect_collision(self.player, platform)
-
+                level.detect_collision(platform)
+            
             if self.player.action == 'run_left':
                 self.player.run_left()
             elif self.player.action == 'run_right':
@@ -92,6 +92,11 @@ class Game:
                 self.player.jump()
 
             level.draw_level()
+            
+            if level.reached_endpoint():
+                self.curr_level_ind += 1
+                self.player.reset()
+                level.ENDPOINT.close()
             
             self.SCREEN.blit(self.player.image, (self.player.x, self.player.y))
             self.border_collision()
