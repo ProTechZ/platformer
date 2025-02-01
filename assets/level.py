@@ -49,14 +49,10 @@ class Level:
             self.SCREEN.blit(ground, (x, self.SCREEN_HEIGHT - ground.get_height()))
 
     def reached_endpoint(self):
-        last_platform = self.platforms.sprites()[-1]
-        if self.PLAYER.rect.colliderect(last_platform.rect):
-            player_middle_x = self.PLAYER.x + self.PLAYER.SIZE / 2
-            player_middle_y = self.PLAYER.y + self.PLAYER.image.get_height() / 2
-
-            if self.ENDPOINT.rect.collidepoint(player_middle_x, player_middle_y):
-                self.ENDPOINT.open()
-                return True
+        player_middle_x = self.PLAYER.x + self.PLAYER.SIZE / 2
+        player_middle_y = self.PLAYER.y + self.PLAYER.image.get_height() /  2
+        if self.ENDPOINT.rect.collidepoint(player_middle_x, player_middle_y):
+            return True
 
     def detect_collision(self, platform: Platform):
         player_b = self.PLAYER.y + self.PLAYER.image.get_height()
@@ -87,6 +83,11 @@ class Level:
                 self.PLAYER.y = platform_t - self.PLAYER.image.get_height()
                 self.PLAYER.velocity_y = 0
                 self.PLAYER.set_idle()
+
+                # if player jumped on the last platform, open the gate
+                last_platform = self.platforms.sprites()[-1]
+                if self.PLAYER.rect.colliderect(last_platform.rect):
+                    self.ENDPOINT.open()
                 
             # Left collision
             elif player_r >= platform_l and player_l < platform_l and self.PLAYER.y == GROUND_LEVEL :
@@ -105,15 +106,3 @@ class Level:
                 self.PLAYER.y = platform_b
                 self.PLAYER.set_jump_end()
                 self.PLAYER.velocity_y = 1
-                
-
-class Level1(Level):
-    def __init__(self, screen):
-        super().__init__(screen)
-        platforms_details = [
-            (220, 475, 200, 50),
-            (450, 400, 200, 50),
-            (700, 325, 200, 50),
-        ]
-
-        self.gen_platforms(platforms_details)

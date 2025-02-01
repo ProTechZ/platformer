@@ -1,7 +1,7 @@
 import pygame
 
 from hand_detection import HandDetectorWindow
-from assets.level import Level1
+from all_levels import *
 from assets.player import Player
 from constants import PLAYER_WIDTH, GROUND_LEVEL
 
@@ -21,7 +21,7 @@ class Game:
         self.is_running = True
 
         self.player = Player(self.SCREEN, PLAYER_WIDTH)
-        self.levels = [Level1(self.SCREEN), Level1(self.SCREEN)]
+        self.levels = [Level1(self.SCREEN, self.player), Level2(self.SCREEN, self.player), Level3(self.SCREEN, self.player)]
         self.curr_level_ind = 0
 
     def event_loop(self):
@@ -94,9 +94,12 @@ class Game:
             level.draw_level()
             
             if level.reached_endpoint():
-                self.curr_level_ind += 1
-                self.player.reset()
-                level.ENDPOINT.close()
+                if self.curr_level_ind + 1 >= len(self.levels):
+                    self.is_running = False
+                else:
+                    self.curr_level_ind += 1
+                    self.player.reset()
+                    level.ENDPOINT.close()
             
             self.SCREEN.blit(self.player.image, (self.player.x, self.player.y))
             self.border_collision()
