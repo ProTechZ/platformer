@@ -54,6 +54,16 @@ class Level:
         if self.ENDPOINT.rect.collidepoint(player_middle_x, player_middle_y):
             return True
 
+    def _jump_on_platform_top(self, platform):
+        self.PLAYER.y = platform.rect.y - self.PLAYER.image.get_height()
+        self.PLAYER.velocity_y = 0
+        self.PLAYER.set_idle()
+
+        # if player jumped on the last platform, open the gate
+        last_platform = self.platforms.sprites()[-1]
+        if self.PLAYER.rect.colliderect(last_platform.rect):
+            self.ENDPOINT.open()
+
     def detect_collision(self, platform: Platform):
         player_b = self.PLAYER.y + self.PLAYER.image.get_height()
         player_t = self.PLAYER.y
@@ -73,30 +83,34 @@ class Level:
                 # Falling from left
                 if self.PLAYER.action == 'run_left' and tipping_point - self.PLAYER.MOVING_SPEED < platform_l:
                     self.PLAYER.set_jump_end()
+                    self.is_falling = False
 
                 # Falling from right
                 elif self.PLAYER.action == 'run_right' and tipping_point - self.PLAYER.MOVING_SPEED > platform_r:
                     self.PLAYER.set_jump_end()
+                    self.is_falling = False
 
             # Jumping on top of platform collision
             if player_b > platform_t and player_t < platform_t and self.PLAYER.velocity_y > 0 and self.PLAYER.action == 'jump_end':
-                self.PLAYER.y = platform_t - self.PLAYER.image.get_height()
-                self.PLAYER.velocity_y = 0
-                self.PLAYER.set_idle()
+                if player_l > platform_l and player_r < platform_r:
+                    self._jump_on_platform_top(platform)
 
-                # if player jumped on the last platform, open the gate
-                last_platform = self.platforms.sprites()[-1]
-                if self.PLAYER.rect.colliderect(last_platform.rect):
-                    self.ENDPOINT.open()
+                elif player_l < platform_l and player_r > platform_l and player_r < platform_r and not self.PLAYER.facing_left:
+                    self._jump_on_platform_top(platform)
+
+                elif player_r > platform_r and player_l < platform_r and player_l > platform_l and self.PLAYER.facing_left:
+                    self._jump_on_platform_top(platform)
                 
             # Left collision
             elif player_r >= platform_l and player_l < platform_l and self.PLAYER.y == GROUND_LEVEL :
+                print(2)
                 if self.PLAYER.move_while_running:
                     self.PLAYER.x = platform_l - self.PLAYER.SIZE
                 self.PLAYER.move_while_running = False
                 
             # Right collision
             elif player_l <= platform_r and player_r > platform_r and self.PLAYER.y == GROUND_LEVEL:
+                print(3)
                 if self.PLAYER.move_while_running:
                     self.PLAYER.x = platform_r
                 self.PLAYER.move_while_running = False
