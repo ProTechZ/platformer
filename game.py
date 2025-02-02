@@ -32,6 +32,9 @@ class Game:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     self.is_running=False
+                elif event.key == pygame.K_r:
+                    self.player.reset()
+                    self.levels[self.curr_level_ind].ENDPOINT.close()
     
     def border_collision(self):
         if self.player.x + self.player.SIZE >= self.WIDTH or self.player.x <= 0:

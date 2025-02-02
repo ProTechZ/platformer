@@ -10,7 +10,7 @@ mp_drawing = mp.solutions.drawing_utils
 class HandDetectorWindow:
     def __init__(self, detection_confidence=0.8, num_hands=1):
         self.model = mp_hands.Hands(max_num_hands=num_hands, min_detection_confidence=detection_confidence)
-        self.cap = cv2.VideoCapture(0)
+        self.cap = cv2.VideoCapture(1)
 
         self.movement = 0
         self.last_pos_x = None
